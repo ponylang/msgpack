@@ -28,7 +28,7 @@ jobs:
       - name: Generate documentation
         run: /entrypoint.py
         env:
-          INPUT_SITE_URL: "https://seantallen-org.github.io/msgpack/"
+          INPUT_SITE_URL: "https://ponylang.github.io/msgpack/"
           INPUT_LIBRARY_NAME: "msgpack"
           INPUT_DOCS_BUILD_DIR: "build/msgpack-docs"
       - name: Setup Pages
