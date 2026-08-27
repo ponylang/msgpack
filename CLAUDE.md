@@ -52,7 +52,7 @@ Internal helpers (`_FormatName`, `_Limit`, `_Size`) are private primitives prefi
 
 All fallible methods use `?` for error signaling.
 
-**Known limitation:** `MessagePackDecoder` is not suitable for streaming. It assumes all data is available when decoding begins. If you read the type byte but the full payload hasn't arrived yet, the stream and reader will be corrupted. See [issue #14](https://github.com/seantallen-org/msgpack/issues/14). `MessagePackStreamingDecoder` addresses this by peeking at format bytes and length fields before consuming any data — if insufficient data is available, it returns `NotEnoughData` with zero bytes consumed.
+**Known limitation:** `MessagePackDecoder` is not suitable for streaming. It assumes all data is available when decoding begins. If you read the type byte but the full payload hasn't arrived yet, the stream and reader will be corrupted. See [issue #14](https://github.com/ponylang/msgpack/issues/14). `MessagePackStreamingDecoder` addresses this by peeking at format bytes and length fields before consuming any data — if insufficient data is available, it returns `NotEnoughData` with zero bytes consumed.
 
 ## Conventions
 

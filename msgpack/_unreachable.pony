@@ -33,7 +33,7 @@ primitive _Unreachable
       @pony_os_stderr(),
       ("The unreachable was reached in %s at line %s\n"
         + "Please open an issue at "
-        + "https://github.com/seantallen-org/msgpack/"
+        + "https://github.com/ponylang/msgpack/"
         + "issues")
         .cstring(),
       loc.file().cstring(),

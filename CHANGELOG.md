@@ -17,21 +17,21 @@ All notable changes this project will be documented in this file. This project a
 
 ### Added
 
-- Add decoding size limits to streaming decoder ([PR #71](https://github.com/seantallen-org/msgpack/pull/71))
-- Add container depth limits to streaming decoder ([PR #72](https://github.com/seantallen-org/msgpack/pull/72))
-- Add skip method for advancing past values without decoding ([PR #73](https://github.com/seantallen-org/msgpack/pull/73))
-- Add opt-in UTF-8 validation for str format values ([PR #76](https://github.com/seantallen-org/msgpack/pull/76))
+- Add decoding size limits to streaming decoder ([PR #71](https://github.com/ponylang/msgpack/pull/71))
+- Add container depth limits to streaming decoder ([PR #72](https://github.com/ponylang/msgpack/pull/72))
+- Add skip method for advancing past values without decoding ([PR #73](https://github.com/ponylang/msgpack/pull/73))
+- Add opt-in UTF-8 validation for str format values ([PR #76](https://github.com/ponylang/msgpack/pull/76))
 
 ## [0.3.0] - 2026-02-08
 
 ### Added
 
-- Add streaming-safe MessagePack decoder ([PR #52](https://github.com/seantallen-org/msgpack/pull/52))
-- Add compact encoding and decoding methods ([PR #60](https://github.com/seantallen-org/msgpack/pull/60))
+- Add streaming-safe MessagePack decoder ([PR #52](https://github.com/ponylang/msgpack/pull/52))
+- Add compact encoding and decoding methods ([PR #60](https://github.com/ponylang/msgpack/pull/60))
 
 ### Changed
 
-- Change timestamp nsec type from I64 to U32 ([PR #56](https://github.com/seantallen-org/msgpack/pull/56))
+- Change timestamp nsec type from I64 to U32 ([PR #56](https://github.com/ponylang/msgpack/pull/56))
 
 ## [0.2.5] - 2022-02-26
 
@@ -39,7 +39,7 @@ All notable changes this project will be documented in this file. This project a
 
 ### Fixed
 
-- Update to work with Pony 0.49.0 ([PR #41](https://github.com/seantallen-org/msgpack/pull/41))
+- Update to work with Pony 0.49.0 ([PR #41](https://github.com/ponylang/msgpack/pull/41))
 
 ## [0.2.3] - 2019-09-02
 

@@ -16,7 +16,7 @@ Additional notes regarding formatting:
 
 ## Bug report
 
-First of all please [search existing issues](https://github.com/seantallen-org/msgpack/issues) to make sure your issue hasn't already been reported. If you cannot find a suitable issue — [create a new one](https://github.com/seantallen-org/msgpack/issues/new).
+First of all please [search existing issues](https://github.com/ponylang/msgpack/issues) to make sure your issue hasn't already been reported. If you cannot find a suitable issue — [create a new one](https://github.com/ponylang/msgpack/issues/new).
 
 Provide the following details:
 
