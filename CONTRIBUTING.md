@@ -4,6 +4,7 @@ You want to contribute to msgpack? Awesome.
 
 There are a number of ways to contribute. As this document is a little long, feel free to jump to the section that applies to you currently:
 
+* [AI-assisted contributions](#ai-assisted-contributions)
 * [Bug report](#bug-report)
 * [How to contribute](#how-to-contribute)
 * [Pull request](#pull-request)
@@ -13,6 +14,30 @@ Additional notes regarding formatting:
 * [Documentation formatting](#documentation-formatting)
 * [Code formatting](#code-formatting)
 * [File naming](#file-naming)
+
+## AI-assisted contributions
+
+We appreciate contributions, whatever the source. If AI tools help you contribute to Pony, we're glad to have you. Many of us use them too.
+
+That also means we know what AI-assisted code looks like when no one's reviewed it, and we won't merge PRs that read that way. If your contribution is clearly AI-assisted, you have an extra responsibility before opening it.
+
+The Pony project publishes a set of LLM skills at [ponylang/llm-skills](https://github.com/ponylang/llm-skills). Familiarize yourself with what's there and make sure your contribution uses the ones that apply to it. A PR that adds an API might lean on `pony-software-design` as you build it, `pony-test-design` for its tests, and `pony-release-notes` for the user-facing change. Which ones apply depends on your PR.
+
+One skill isn't optional: `pony-code-review`. We recommend running it against any contribution. For clearly AI-assisted PRs, we require it. Run it. Understand every finding. Then address it — by fixing it, or by dismissing it with a justification you can defend in the PR. The review surfaces the kind of issues a human maintainer would catch, but it isn't infallible. What you can't do is skip a finding because you didn't understand it. Don't open the PR until you've worked through them all.
+
+If the review surfaces something you don't understand or don't know how to answer, stop. Don't open the PR. Come to the [Pony Zulip](https://ponylang.zulipchat.com/) and ask. We are happy to teach. We enjoy helping people learn Pony.
+
+What we won't do is teach an AI. If a PR's open questions can only be resolved by maintainers explaining things to you so you can relay them to your AI for the next round, that's not a code review. That's us teaching a tool that won't remember any of it. Our time is better spent on the contributor who came to Zulip first.
+
+You don't have to disclose AI use, though saying so up front often makes review faster. What you do have to do is stand behind the code. If you can't answer questions about why your PR looks the way it does, it isn't ready.
+
+If you or your AI assistant are using an Anthropic model, use `claude-opus-4-6` for writing comments, documentation, and other prose. We've found that prose quality from Anthropic models started dropping with Opus 4.7 and has gotten worse with each subsequent release.
+
+### Junk PRs
+
+This isn't new policy. Long before AI tools were any good, low-effort PRs that wasted maintainer time could get a contributor blocked. That hasn't changed. What's changed is how easy it has become to produce a junk PR. One won't get you blocked. A pattern of them will. How many makes a pattern is our call.
+
+We don't owe anyone our time. We choose to give it. Don't waste it.
 
 ## Bug report
 
@@ -55,16 +80,25 @@ You can get help using GitHub via [the official documentation](https://help.gith
 
 ## Pull request
 
-Before issuing a pull request we ask that you squash all your commits into a single logical commit. While your PR is in review, we may ask for additional changes, please do not squash those commits while the review is underway. Once everything is good, I'll then ask you to further squash those commits before merging. We ask that you not squash while a review is underway as it can make it hard to follow what is going on. Additionally, we ask that you:
+While we don't require that your pull request be a single commit, note that we will end up squashing all your commits into a single commit when we merge. While your PR is in review, we may ask for additional changes, please do not squash those commits while the review is underway. We ask that you not squash while a review is underway as it can make it hard to follow what is going on.
 
-* [Write a good commit message](http://chris.beams.io/posts/git-commit/)
-* Issue 1 Pull Request per feature. Don't lump unrelated changes together.
+When opening your pull request, please make sure that the initial comment on the PR is the commit message we should use when we merge. Making sure your commit message conforms to these guidelines for [writ(ing) a good commit message](http://chris.beams.io/posts/git-commit/).
 
-If you aren't sure how to squash multiple commits into one, Steve Klabnik wrote [a handy guide](http://blog.steveklabnik.com/posts/2012-11-08-how-to-squash-commits-in-a-github-pull-request) that you can refer to.
+Make sure to issue 1 pull request per feature. Don't lump unrelated changes together. If you find yourself using the word "and" in your commit comment, you
+are probably doing too much for a single PR.
 
-Once those conditions are met, the PR can be merged.
+We keep a [CHANGELOG](CHANGELOG.md) of all software changes with behavioural effects in msgpack. If your PR includes such changes (rather than say a documentation update), a Pony team member will do the following before merging it, so that the PR will be automatically added to the CHANGELOG:
 
-Please note, if your changes are purely to things like README, CHANGELOG etc, you can add [skip ci] as the last line of your commit message and your PR won't be run through our continuous integration systems. We ask that you use [skip ci] where appropriate as it helps to get changes through CI faster and doesn't waste resources that CircleCI is kindly donating to the Open Source community.
+* Ensure that the ticket is tagged with one or more appropriate "changelog - *" labels - each label corresponds to a section of the changelog where this change will be automatically mentioned.
+* Ensure that the ticket title is appropriate - the title will be used as the summary of the change, so it should be appropriately formatted, including a ticket reference if the PR is a fix to an existing bug ticket.
+  * For example, an appropriate title for a PR that fixes a bug reported in issue ticket #98 might look like:
+  * *Fixed compiler crash related to tuple recovery (issue #98)*
+
+Once those conditions are met, the PR can be merged, and an automated system will immediately add the entry to the changelog. Keeping the changelog entries out of the file changes in the PR helps to avoid conflicts and other administrative headaches when many PRs are in progress.
+
+Any change that involves a changelog entry will trigger a bot to request that you add release notes to your PR.
+
+Pull requests from accounts that aren't members of the Ponylang organization require approval from a member before running. Approval is required after each update that you make. This could involve a lot of waiting on your part for approvals. If you are opening PRs to verify that changes all pass CI before "opening it for real", we strongly suggest that you open the PR against the `main` branch of your fork. CI will then run in your fork and you don't need to wait for approval from a Ponylang member.
 
 ## Documentation formatting
 

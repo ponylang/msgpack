@@ -3,6 +3,7 @@ config ?= release
 PACKAGE := msgpack
 COMPILE_WITH := ponyc
 BUILD_DOCS_WITH := corral run -- pony-doc
+LINT_WITH := pony-lint
 
 BUILD_DIR ?= build/$(config)
 SRC_DIR ?= $(PACKAGE)
@@ -50,6 +51,9 @@ $(docs_dir): $(SOURCE_FILES)
 
 docs: $(docs_dir)
 
+lint:
+	$(LINT_WITH) .
+
 TAGS:
 	ctags --recurse=yes $(SRC_DIR)
 
@@ -58,4 +62,4 @@ all: test
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-.PHONY: all clean realclean TAGS test
+.PHONY: all clean lint realclean TAGS test
