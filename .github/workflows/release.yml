@@ -27,7 +27,7 @@ jobs:
           ref: "main"
           token: ${{ secrets.RELEASE_TOKEN }}
       - name: Validate CHANGELOG
-        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.5
         with:
           entrypoint: pre-artefact-changelog-check
 
@@ -74,9 +74,9 @@ jobs:
           ref: "main"
           token: ${{ secrets.RELEASE_TOKEN }}
       - name: Trigger
-        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.3
+        uses: docker://ghcr.io/ponylang/release-bot-action:0.6.5
         with:
           entrypoint: trigger-release-announcement
         env:
-          GIT_USER_NAME: "Sean T.  Allen"
-          GIT_USER_EMAIL: "sean@seantallen.com"
+          GIT_USER_NAME: "Ponylang Main Bot"
+          GIT_USER_EMAIL: "ponylang.main@gmail.com"

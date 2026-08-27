@@ -1,0 +1,37 @@
+name: Repository Hygiene
+
+on: pull_request
+
+concurrency:
+  group: pr-repo-hygiene-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  packages: read
+
+jobs:
+  lint-markdown:
+    name: Lint markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Lint markdown
+        uses: docker://ghcr.io/ponylang/shared-docker-ci-markdownlint:20260810
+
+  lint-shell:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Lint shell scripts
+        uses: docker://ghcr.io/ponylang/shared-docker-ci-shellcheck:20260810
+
+  verify-changelog:
+    name: Verify CHANGELOG is valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Verify CHANGELOG
+        uses: docker://ghcr.io/ponylang/changelog-tool:release
+        with:
+          args: changelog-tool verify

@@ -1,6 +1,4 @@
-build/*
-TAGS
-tags
-.deps/*
+_repos/
+_corral/
+build/
 lock.json
-.claude

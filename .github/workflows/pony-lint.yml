@@ -1,28 +1,24 @@
-name: PR
+name: pony-lint
 
 on:
   pull_request:
     paths:
-      - '**'
-      - '!**/*.md'
-      - '!**/*.yml'
-      - '!**/*.yaml'
-      - '.github/workflows/pr.yml'
+      - '**/*.pony'
 
 concurrency:
-  group: pr-${{ github.ref }}
+  group: pony-lint-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   packages: read
 
 jobs:
-  vs-ponyc-release:
-    name: Test against recent ponyc release
+  pony-lint:
+    name: Lint Pony source
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/ponylang/shared-docker-ci-standard-builder:release
     steps:
       - uses: actions/checkout@v6.0.2
-      - name: Test
-        run: make test config=debug
+      - name: Lint
+        run: make lint
