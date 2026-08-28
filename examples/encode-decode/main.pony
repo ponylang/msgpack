@@ -4,11 +4,6 @@ use "../../msgpack"
 use "buffered"
 
 actor Main
-  """
-  Demonstrates encoding and decoding MessagePack values using
-  the compact API. Encodes nil, bool, uint, int, str, an array,
-  and a map, then decodes each in the same order.
-  """
   new create(env: Env) =>
     try
       _encode_and_decode(env)?
@@ -49,17 +44,17 @@ actor Main
     MessagePackDecoder.nil(r)?
     env.out.print("decoded nil")
 
-    env.out.print("decoded bool: "
-      + MessagePackDecoder.bool(r)?.string())
+    env.out.print("decoded bool: " +
+      MessagePackDecoder.bool(r)?.string())
 
-    env.out.print("decoded uint: "
-      + MessagePackDecoder.uint(r)?.string())
+    env.out.print("decoded uint: " +
+      MessagePackDecoder.uint(r)?.string())
 
-    env.out.print("decoded int: "
-      + MessagePackDecoder.int(r)?.string())
+    env.out.print("decoded int: " +
+      MessagePackDecoder.int(r)?.string())
 
-    env.out.print("decoded str: "
-      + MessagePackDecoder.str(r)?)
+    env.out.print("decoded str: " +
+      MessagePackDecoder.str(r)?)
 
     // Decode the array header, then each element
     let arr_size = MessagePackDecoder.array(r)?
@@ -78,7 +73,7 @@ actor Main
     while i < map_size do
       let key = MessagePackDecoder.str(r)?
       let value = MessagePackDecoder.uint(r)?
-      env.out.print("decoded map entry: "
-        + consume key + " = " + value.string())
+      env.out.print("decoded map entry: " +
+        (consume key) + " = " + value.string())
       i = i + 1
     end

@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 class MessagePackStreamingDecoder
   """
   A streaming-safe MessagePack decoder that never corrupts the
@@ -219,18 +201,18 @@ class MessagePackStreamingDecoder
         offset = offset + 1
       elseif fb <= 0x8F then
         // fixmap: 1 byte header, count * 2 values
-        remaining = remaining
-          + ((fb and 0x0F).usize() * 2)
+        remaining =
+          remaining + ((fb and 0x0F).usize() * 2)
         offset = offset + 1
       elseif fb <= 0x9F then
         // fixarray: 1 byte header, count values
-        remaining = remaining
-          + (fb and 0x0F).usize()
+        remaining =
+          remaining + (fb and 0x0F).usize()
         offset = offset + 1
       elseif fb <= 0xBF then
         // fixstr: 1 byte header + data
-        offset = offset + 1
-          + (fb and 0x1F).usize()
+        offset =
+          (offset + 1) + (fb and 0x1F).usize()
       elseif fb == 0xC0 then
         // nil: 1 byte
         offset = offset + 1
@@ -419,7 +401,6 @@ class MessagePackStreamingDecoder
   //
   // Fixed-size single-byte formats
   //
-
   fun ref _decode_positive_fixint(): DecodeResult =>
     // 0x00-0x7F: value is the byte itself
     try _reader.u8()?
@@ -457,7 +438,6 @@ class MessagePackStreamingDecoder
   //
   // Fixed-size numeric formats
   //
-
   fun ref _decode_float_32(): DecodeResult =>
     // 0xCA: 1 type + 4 data = 5 bytes
     if _reader.size() < 5 then return NotEnoughData end
@@ -537,7 +517,6 @@ class MessagePackStreamingDecoder
   //
   // Variable-length string formats
   //
-
   fun ref _decode_fixstr(fb: U8): DecodeResult =>
     // 0xA0-0xBF: 1 format byte + (fb AND fixstr mask) data bytes
     let data_len = fb.usize() and _Limit.fixstr()
@@ -549,8 +528,8 @@ class MessagePackStreamingDecoder
     end
     try
       let s = MessagePackZeroCopyDecoder.fixstr(_reader)?
-      if _validate_utf8
-        and not MessagePackValidateUTF8(s)
+      if _validate_utf8 and
+        not MessagePackValidateUTF8(s)
       then
         return InvalidUtf8
       end
@@ -596,15 +575,16 @@ class MessagePackStreamingDecoder
     end
 
     try
-      let s = if fb == _FormatName.str_8() then
-        MessagePackZeroCopyDecoder.str_8(_reader)?
-      elseif fb == _FormatName.str_16() then
-        MessagePackZeroCopyDecoder.str_16(_reader)?
-      else
-        MessagePackZeroCopyDecoder.str_32(_reader)?
-      end
-      if _validate_utf8
-        and not MessagePackValidateUTF8(s)
+      let s =
+        if fb == _FormatName.str_8() then
+          MessagePackZeroCopyDecoder.str_8(_reader)?
+        elseif fb == _FormatName.str_16() then
+          MessagePackZeroCopyDecoder.str_16(_reader)?
+        else
+          MessagePackZeroCopyDecoder.str_32(_reader)?
+        end
+      if _validate_utf8 and
+        not MessagePackValidateUTF8(s)
       then
         return InvalidUtf8
       end
@@ -617,7 +597,6 @@ class MessagePackStreamingDecoder
   //
   // Binary format
   //
-
   fun ref _decode_bin(fb: U8): DecodeResult =>
     // 0xC4: bin_8, header=2, len=peek_u8(1)
     // 0xC5: bin_16, header=3, len=peek_u16_be(1)
@@ -669,7 +648,6 @@ class MessagePackStreamingDecoder
   //
   // Array format
   //
-
   fun ref _decode_fixarray(fb: U8): DecodeResult =>
     // 0x90-0x9F: 1 byte header, count in low 4 bits
     let count = (fb and 0x0F).u32()
@@ -731,7 +709,6 @@ class MessagePackStreamingDecoder
   //
   // Map format
   //
-
   fun ref _decode_fixmap(fb: U8): DecodeResult =>
     // 0x80-0x8F: 1 byte header, count in low 4 bits
     let count = (fb and 0x0F).u32()
@@ -793,7 +770,6 @@ class MessagePackStreamingDecoder
   //
   // Fixed-size extension formats
   //
-
   fun ref _decode_fixext(fb: U8): DecodeResult =>
     // 0xD4: fixext_1, 3 bytes (1 type + 1 ext_type + 1 data)
     // 0xD5: fixext_2, 4 bytes
@@ -816,8 +792,8 @@ class MessagePackStreamingDecoder
     if _reader.size() < required then return NotEnoughData end
 
     // Timestamp: fixext_4 or fixext_8 with ext_type 0xFF
-    if (fb == _FormatName.fixext_4())
-      or (fb == _FormatName.fixext_8())
+    if (fb == _FormatName.fixext_4()) or
+      (fb == _FormatName.fixext_8())
     then
       try
         if _reader.peek_u8(1)? == 0xFF then
@@ -851,7 +827,6 @@ class MessagePackStreamingDecoder
   //
   // Variable-length extension formats
   //
-
   fun ref _decode_ext_variable(fb: U8): DecodeResult =>
     // 0xC7: ext_8, header=2 (1+1len), +1 type + data
     // 0xC8: ext_16, header=3 (1+2len), +1 type + data
@@ -919,7 +894,6 @@ class MessagePackStreamingDecoder
   //
   // Timestamp format
   //
-
   fun ref _decode_timestamp(): DecodeResult =>
     try
       (let sec, let nsec) = MessagePackZeroCopyDecoder.timestamp(_reader)?
@@ -932,7 +906,6 @@ class MessagePackStreamingDecoder
   //
   // Container depth tracking
   //
-
   fun ref _track(result: DecodeResult): DecodeResult =>
     match result
     | let a: MessagePackArray =>
@@ -965,8 +938,8 @@ class MessagePackStreamingDecoder
 
   fun ref _drain_completed() =>
     try
-      while (_stack.size() > 0)
-        and (_stack(_stack.size() - 1)? == 0)
+      while (_stack.size() > 0) and
+        (_stack(_stack.size() - 1)? == 0)
       do
         _stack.pop()?
       end

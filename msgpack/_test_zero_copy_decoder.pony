@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 use "buffered"
 use "pony_check"
 use "pony_test"
@@ -27,16 +9,17 @@ primitive _ZeroCopyBytes
   """
   fun apply(w: Writer ref): ZeroCopyReader ref =>
     let b = ZeroCopyReader
-    let out = recover val
-      let a = Array[U8]
-      for chunk in w.done().values() do
-        match chunk
-        | let arr: Array[U8] val => a.append(arr)
-        | let s: String val => a.append(s.array())
+    let out =
+      recover val
+        let a = Array[U8]
+        for chunk in w.done().values() do
+          match \exhaustive\ chunk
+          | let arr: Array[U8] val => a.append(arr)
+          | let s: String val => a.append(s.array())
+          end
         end
+        a
       end
-      a
-    end
     b.append(out)
     b
 
@@ -167,7 +150,6 @@ actor \nodoc\ _TestZeroCopyDecoder is TestList
 //
 // ZeroCopyReader tests
 //
-
 class \nodoc\ _TestZCReaderBlockSingleChunk is UnitTest
   fun name(): String => "msgpack/ZCReaderBlockSingleChunk"
 
@@ -217,16 +199,17 @@ class \nodoc\ _TestZCReaderNumericReads is UnitTest
     w.f64_be(2.71828)
 
     let b = ZeroCopyReader
-    let out = recover val
-      let a = Array[U8]
-      for chunk in w.done().values() do
-        match chunk
-        | let arr: Array[U8] val => a.append(arr)
-        | let s: String val => a.append(s.array())
+    let out =
+      recover val
+        let a = Array[U8]
+        for chunk in w.done().values() do
+          match \exhaustive\ chunk
+          | let arr: Array[U8] val => a.append(arr)
+          | let s: String val => a.append(s.array())
+          end
         end
+        a
       end
-      a
-    end
     b.append(out)
 
     h.assert_eq[U8](42, b.u8()?)
@@ -304,7 +287,6 @@ class \nodoc\ _TestZCReaderExactBoundary is UnitTest
 //
 // Roundtrip tests
 //
-
 class \nodoc\ _TestZCDecodeNil is UnitTest
   fun name(): String => "msgpack/ZCDecodeNil"
 
@@ -339,7 +321,8 @@ class \nodoc\ _TestZCDecodeU8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint_8(w, 9)
-    h.assert_eq[U8](9,
+    h.assert_eq[U8](
+      9,
       MessagePackZeroCopyDecoder.u8(
         _ZeroCopyBytes(w))?)
 
@@ -349,7 +332,8 @@ class \nodoc\ _TestZCDecodeU16 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint_16(w, 17)
-    h.assert_eq[U16](17,
+    h.assert_eq[U16](
+      17,
       MessagePackZeroCopyDecoder.u16(
         _ZeroCopyBytes(w))?)
 
@@ -359,7 +343,8 @@ class \nodoc\ _TestZCDecodeU32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint_32(w, 33)
-    h.assert_eq[U32](33,
+    h.assert_eq[U32](
+      33,
       MessagePackZeroCopyDecoder.u32(
         _ZeroCopyBytes(w))?)
 
@@ -369,7 +354,8 @@ class \nodoc\ _TestZCDecodeU64 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint_64(w, 65)
-    h.assert_eq[U64](65,
+    h.assert_eq[U64](
+      65,
       MessagePackZeroCopyDecoder.u64(
         _ZeroCopyBytes(w))?)
 
@@ -379,7 +365,8 @@ class \nodoc\ _TestZCDecodeI8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int_8(w, 9)
-    h.assert_eq[I8](9,
+    h.assert_eq[I8](
+      9,
       MessagePackZeroCopyDecoder.i8(
         _ZeroCopyBytes(w))?)
 
@@ -389,7 +376,8 @@ class \nodoc\ _TestZCDecodeI16 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int_16(w, 17)
-    h.assert_eq[I16](17,
+    h.assert_eq[I16](
+      17,
       MessagePackZeroCopyDecoder.i16(
         _ZeroCopyBytes(w))?)
 
@@ -399,7 +387,8 @@ class \nodoc\ _TestZCDecodeI32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int_32(w, 33)
-    h.assert_eq[I32](33,
+    h.assert_eq[I32](
+      33,
       MessagePackZeroCopyDecoder.i32(
         _ZeroCopyBytes(w))?)
 
@@ -409,7 +398,8 @@ class \nodoc\ _TestZCDecodeI64 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int_64(w, 65)
-    h.assert_eq[I64](65,
+    h.assert_eq[I64](
+      65,
       MessagePackZeroCopyDecoder.i64(
         _ZeroCopyBytes(w))?)
 
@@ -420,7 +410,8 @@ class \nodoc\ _TestZCDecodePositiveFixint is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.positive_fixint(w, 17)?
-    h.assert_eq[U8](17,
+    h.assert_eq[U8](
+      17,
       MessagePackZeroCopyDecoder.positive_fixint(
         _ZeroCopyBytes(w))?)
 
@@ -431,7 +422,8 @@ class \nodoc\ _TestZCDecodeNegativeFixint is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.negative_fixint(w, -17)?
-    h.assert_eq[I8](-17,
+    h.assert_eq[I8](
+      -17,
       MessagePackZeroCopyDecoder.negative_fixint(
         _ZeroCopyBytes(w))?)
 
@@ -441,7 +433,8 @@ class \nodoc\ _TestZCDecodeF32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.float_32(w, 33.33)
-    h.assert_eq[F32](33.33,
+    h.assert_eq[F32](
+      33.33,
       MessagePackZeroCopyDecoder.f32(
         _ZeroCopyBytes(w))?)
 
@@ -451,7 +444,8 @@ class \nodoc\ _TestZCDecodeF64 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.float_64(w, 65.65)
-    h.assert_eq[F64](65.65,
+    h.assert_eq[F64](
+      65.65,
       MessagePackZeroCopyDecoder.f64(
         _ZeroCopyBytes(w))?)
 
@@ -461,7 +455,8 @@ class \nodoc\ _TestZCDecodeFixstr is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.fixstr(w, "fixstr")?
-    h.assert_eq[String]("fixstr",
+    h.assert_eq[String](
+      "fixstr",
       MessagePackZeroCopyDecoder.fixstr(
         _ZeroCopyBytes(w))?)
 
@@ -471,7 +466,8 @@ class \nodoc\ _TestZCDecodeStr8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, "str8")?
-    h.assert_eq[String]("str8",
+    h.assert_eq[String](
+      "str8",
       MessagePackZeroCopyDecoder.str_8(
         _ZeroCopyBytes(w))?)
 
@@ -481,7 +477,8 @@ class \nodoc\ _TestZCDecodeStr16 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_16(w, "str16")?
-    h.assert_eq[String]("str16",
+    h.assert_eq[String](
+      "str16",
       MessagePackZeroCopyDecoder.str_16(
         _ZeroCopyBytes(w))?)
 
@@ -491,7 +488,8 @@ class \nodoc\ _TestZCDecodeStr32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_32(w, "str32")?
-    h.assert_eq[String]("str32",
+    h.assert_eq[String](
+      "str32",
       MessagePackZeroCopyDecoder.str_32(
         _ZeroCopyBytes(w))?)
 
@@ -543,7 +541,8 @@ class \nodoc\ _TestZCDecodeFixarray is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.fixarray(w, 8)?
-    h.assert_eq[U8](8,
+    h.assert_eq[U8](
+      8,
       MessagePackZeroCopyDecoder.fixarray(
         _ZeroCopyBytes(w))?)
 
@@ -553,7 +552,8 @@ class \nodoc\ _TestZCDecodeArray16 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.array_16(w, 17)
-    h.assert_eq[U16](17,
+    h.assert_eq[U16](
+      17,
       MessagePackZeroCopyDecoder.array_16(
         _ZeroCopyBytes(w))?)
 
@@ -563,7 +563,8 @@ class \nodoc\ _TestZCDecodeArray32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.array_32(w, 33)
-    h.assert_eq[U32](33,
+    h.assert_eq[U32](
+      33,
       MessagePackZeroCopyDecoder.array_32(
         _ZeroCopyBytes(w))?)
 
@@ -573,7 +574,8 @@ class \nodoc\ _TestZCDecodeFixmap is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.fixmap(w, 8)?
-    h.assert_eq[U8](8,
+    h.assert_eq[U8](
+      8,
       MessagePackZeroCopyDecoder.fixmap(
         _ZeroCopyBytes(w))?)
 
@@ -583,7 +585,8 @@ class \nodoc\ _TestZCDecodeMap16 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.map_16(w, 17)
-    h.assert_eq[U16](17,
+    h.assert_eq[U16](
+      17,
       MessagePackZeroCopyDecoder.map_16(
         _ZeroCopyBytes(w))?)
 
@@ -593,7 +596,8 @@ class \nodoc\ _TestZCDecodeMap32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.map_32(w, 33)
-    h.assert_eq[U32](33,
+    h.assert_eq[U32](
+      33,
       MessagePackZeroCopyDecoder.map_32(
         _ZeroCopyBytes(w))?)
 
@@ -602,7 +606,9 @@ class \nodoc\ _TestZCDecodeFixext1 is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
-    MessagePackEncoder.fixext_1(w, 7,
+    MessagePackEncoder.fixext_1(
+      w,
+      7,
       recover val [as U8: 0xAB] end)?
     (let t, let d) =
       MessagePackZeroCopyDecoder.fixext_1(
@@ -615,7 +621,9 @@ class \nodoc\ _TestZCDecodeFixext2 is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
-    MessagePackEncoder.fixext_2(w, 7,
+    MessagePackEncoder.fixext_2(
+      w,
+      7,
       recover val [as U8: 0xAB; 0xCD] end)?
     (let t, let d) =
       MessagePackZeroCopyDecoder.fixext_2(
@@ -628,7 +636,9 @@ class \nodoc\ _TestZCDecodeFixext4 is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
-    MessagePackEncoder.fixext_4(w, 7,
+    MessagePackEncoder.fixext_4(
+      w,
+      7,
       recover val [as U8: 1; 2; 3; 4] end)?
     (let t, let d) =
       MessagePackZeroCopyDecoder.fixext_4(
@@ -641,7 +651,9 @@ class \nodoc\ _TestZCDecodeFixext8 is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
-    MessagePackEncoder.fixext_8(w, 7,
+    MessagePackEncoder.fixext_8(
+      w,
+      7,
       recover val
         [as U8: 1; 2; 3; 4; 5; 6; 7; 8]
       end)?
@@ -656,15 +668,16 @@ class \nodoc\ _TestZCDecodeFixext16 is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
-    let data = recover val
-      let a = Array[U8]
-      var i: USize = 0
-      while i < 16 do
-        a.push(i.u8())
-        i = i + 1
+    let data =
+      recover val
+        let a = Array[U8]
+        var i: USize = 0
+        while i < 16 do
+          a.push(i.u8())
+          i = i + 1
+        end
+        a
       end
-      a
-    end
     MessagePackEncoder.fixext_16(w, 7, data)?
     (let t, let d) =
       MessagePackZeroCopyDecoder.fixext_16(
@@ -760,7 +773,8 @@ class \nodoc\ _TestZCDecodeCompactUint is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint(w, 42)
-    h.assert_eq[U64](42,
+    h.assert_eq[U64](
+      42,
       MessagePackZeroCopyDecoder.uint(
         _ZeroCopyBytes(w))?)
 
@@ -771,7 +785,8 @@ class \nodoc\ _TestZCDecodeCompactInt is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int(w, -42)
-    h.assert_eq[I64](-42,
+    h.assert_eq[I64](
+      -42,
       MessagePackZeroCopyDecoder.int(
         _ZeroCopyBytes(w))?)
 
@@ -782,7 +797,8 @@ class \nodoc\ _TestZCDecodeCompactStr is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str(w, "hello")?
-    h.assert_eq[String]("hello",
+    h.assert_eq[String](
+      "hello",
       MessagePackZeroCopyDecoder.str(
         _ZeroCopyBytes(w))?)
 
@@ -793,7 +809,8 @@ class \nodoc\ _TestZCDecodeCompactArray is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.array(w, 5)
-    h.assert_eq[U32](5,
+    h.assert_eq[U32](
+      5,
       MessagePackZeroCopyDecoder.array(
         _ZeroCopyBytes(w))?)
 
@@ -804,7 +821,8 @@ class \nodoc\ _TestZCDecodeCompactMap is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.map(w, 3)
-    h.assert_eq[U32](3,
+    h.assert_eq[U32](
+      3,
       MessagePackZeroCopyDecoder.map(
         _ZeroCopyBytes(w))?)
 
@@ -839,7 +857,6 @@ class \nodoc\ _TestZCDecodeCompactTimestamp is UnitTest
 //
 // Property-based roundtrip tests
 //
-
 class \nodoc\ _PropertyZCCompactUintRoundtrip
   is Property1[U64]
   fun name(): String =>
@@ -851,7 +868,8 @@ class \nodoc\ _PropertyZCCompactUintRoundtrip
   fun property(sample: U64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.uint(w, sample)
-    h.assert_eq[U64](sample,
+    h.assert_eq[U64](
+      sample,
       MessagePackZeroCopyDecoder.uint(
         _ZeroCopyBytes(w))?)
 
@@ -866,7 +884,8 @@ class \nodoc\ _PropertyZCCompactIntRoundtrip
   fun property(sample: I64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.int(w, sample)
-    h.assert_eq[I64](sample,
+    h.assert_eq[I64](
+      sample,
       MessagePackZeroCopyDecoder.int(
         _ZeroCopyBytes(w))?)
 
@@ -885,7 +904,8 @@ class \nodoc\ _PropertyZCCompactStrRoundtrip
   ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str(w, sample)?
-    h.assert_eq[String](sample,
+    h.assert_eq[String](
+      sample,
       MessagePackZeroCopyDecoder.str(
         _ZeroCopyBytes(w))?)
 
@@ -900,7 +920,8 @@ class \nodoc\ _PropertyZCCompactArrayRoundtrip
   fun property(sample: U32, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.array(w, sample)
-    h.assert_eq[U32](sample,
+    h.assert_eq[U32](
+      sample,
       MessagePackZeroCopyDecoder.array(
         _ZeroCopyBytes(w))?)
 
@@ -915,7 +936,8 @@ class \nodoc\ _PropertyZCCompactMapRoundtrip
   fun property(sample: U32, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.map(w, sample)
-    h.assert_eq[U32](sample,
+    h.assert_eq[U32](
+      sample,
       MessagePackZeroCopyDecoder.map(
         _ZeroCopyBytes(w))?)
 
@@ -934,7 +956,8 @@ class \nodoc\ _PropertyZCStr8Roundtrip
   ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, sample)?
-    h.assert_eq[String](sample,
+    h.assert_eq[String](
+      sample,
       MessagePackZeroCopyDecoder.str_8(
         _ZeroCopyBytes(w))?)
 
@@ -953,7 +976,8 @@ class \nodoc\ _PropertyZCStr16Roundtrip
   ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_16(w, sample)?
-    h.assert_eq[String](sample,
+    h.assert_eq[String](
+      sample,
       MessagePackZeroCopyDecoder.str_16(
         _ZeroCopyBytes(w))?)
 
@@ -1218,11 +1242,11 @@ class \nodoc\ _PropertyZCExt16Roundtrip
       (U8, Array[U8] val)](
       Generators.u8()
         .filter({(v) => (v, v != 0xFF) }),
-      Generators.frequency[USize]([
-        as WeightedGenerator[USize]:
-        (7, Generators.usize(0, 300))
-        (3, Generators.usize(301, 1000))
-      ]),
+      Generators.frequency[USize](
+        [ as WeightedGenerator[USize]:
+          (7, Generators.usize(0, 300))
+          (3, Generators.usize(301, 1000))
+        ]),
       {(ext_type, len) =>
         (ext_type,
           recover val
@@ -1248,7 +1272,6 @@ class \nodoc\ _PropertyZCExt16Roundtrip
 //
 // Cross-decoder equivalence
 //
-
 class \nodoc\ _PropertyZCCrossDecoderStr
   is Property1[String]
   fun name(): String =>
@@ -1326,7 +1349,8 @@ class \nodoc\ _TestZCDecodeFixstrUtf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.fixstr(w, "fixstr")?
-    h.assert_eq[String]("fixstr",
+    h.assert_eq[String](
+      "fixstr",
       MessagePackZeroCopyDecoder.fixstr_utf8(
         _ZeroCopyBytes(w))?)
 
@@ -1350,7 +1374,8 @@ class \nodoc\ _TestZCDecodeStr8Utf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, "str8")?
-    h.assert_eq[String]("str8",
+    h.assert_eq[String](
+      "str8",
       MessagePackZeroCopyDecoder.str_8_utf8(
         _ZeroCopyBytes(w))?)
 
@@ -1374,7 +1399,8 @@ class \nodoc\ _TestZCDecodeStr16Utf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_16(w, "str16")?
-    h.assert_eq[String]("str16",
+    h.assert_eq[String](
+      "str16",
       MessagePackZeroCopyDecoder.str_16_utf8(
         _ZeroCopyBytes(w))?)
 
@@ -1398,7 +1424,8 @@ class \nodoc\ _TestZCDecodeStr32Utf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_32(w, "str32")?
-    h.assert_eq[String]("str32",
+    h.assert_eq[String](
+      "str32",
       MessagePackZeroCopyDecoder.str_32_utf8(
         _ZeroCopyBytes(w))?)
 
@@ -1423,7 +1450,8 @@ class \nodoc\ _TestZCDecodeCompactStrUtf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str(w, "hello")?
-    h.assert_eq[String]("hello",
+    h.assert_eq[String](
+      "hello",
       MessagePackZeroCopyDecoder.str_utf8(
         _ZeroCopyBytes(w))?)
 
@@ -1457,7 +1485,8 @@ class \nodoc\ _PropertyZCCompactStrUtf8Roundtrip
   ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_utf8(w, sample)?
-    h.assert_eq[String](sample,
+    h.assert_eq[String](
+      sample,
       MessagePackZeroCopyDecoder.str_utf8(
         _ZeroCopyBytes(w))?)
 
