@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 primitive MessagePackZeroCopyDecoder
   """
   Implements low-level zero-copy decoding from the [MessagePack
@@ -52,7 +34,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // compact format family
   //
-
   fun uint(b: ZeroCopyReader): U64 ? =>
     """
     Decodes an unsigned integer from any uint or positive fixint
@@ -158,7 +139,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // nil format family
   //
-
   fun nil(b: ZeroCopyReader): None ? =>
     """
     Returns nothing. Throws an error if the next byte isn't a
@@ -171,7 +151,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // bool format family
   //
-
   fun bool(b: ZeroCopyReader): Bool ? =>
     match _read_type(b)?
     | _FormatName.truthy() => true
@@ -183,7 +162,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // fixed number family
   //
-
   fun positive_fixint(b: ZeroCopyReader): U8 ? =>
     b.u8()?
 
@@ -193,7 +171,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // unsigned int family
   //
-
   fun u8(b: ZeroCopyReader): U8 ? =>
     if _read_type(b)? != _FormatName.uint_8() then
       error
@@ -225,7 +202,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // signed integer family
   //
-
   fun i8(b: ZeroCopyReader): I8 ? =>
     if _read_type(b)? != _FormatName.int_8() then
       error
@@ -257,7 +233,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // float format family
   //
-
   fun f32(b: ZeroCopyReader): F32 ? =>
     if _read_type(b)? != _FormatName.float_32() then
       error
@@ -275,7 +250,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // str family
   //
-
   // Note: MessagePackStreamingDecoder pre-validates total size
   // before calling this method. If the read sequence changes,
   // update the size check in _decode_fixstr.
@@ -286,17 +260,18 @@ primitive MessagePackZeroCopyDecoder
   fun str(b: ZeroCopyReader): String val ? =>
     let t = _read_type(b)?
 
-    let len = if (t and 0xE0) == _FormatName.fixstr() then
-      (t and 0x1F).usize()
-    elseif t == _FormatName.str_8() then
-      b.u8()?
-    elseif t == _FormatName.str_16() then
-      b.u16_be()?.usize()
-    elseif t == _FormatName.str_32() then
-      b.u32_be()?.usize()
-    else
-      error
-    end
+    let len =
+      if (t and 0xE0) == _FormatName.fixstr() then
+        (t and 0x1F).usize()
+      elseif t == _FormatName.str_8() then
+        b.u8()?
+      elseif t == _FormatName.str_16() then
+        b.u16_be()?.usize()
+      elseif t == _FormatName.str_32() then
+        b.u32_be()?.usize()
+      else
+        error
+      end
 
     String.from_array(b.block(len.usize())?)
 
@@ -354,7 +329,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // str family — UTF-8 validating variants
   //
-
   fun str_utf8(b: ZeroCopyReader): String val ? =>
     """
     Decodes a MessagePack str value using the smallest matching
@@ -427,19 +401,19 @@ primitive MessagePackZeroCopyDecoder
   //
   // byte array family
   //
-
   fun byte_array(b: ZeroCopyReader): Array[U8] val ? =>
     let t = _read_type(b)?
 
-    let len = if t == _FormatName.bin_8() then
-      b.u8()?
-    elseif t == _FormatName.bin_16() then
-      b.u16_be()?.usize()
-    elseif t == _FormatName.bin_32() then
-      b.u32_be()?.usize()
-    else
-      error
-    end
+    let len =
+      if t == _FormatName.bin_8() then
+        b.u8()?
+      elseif t == _FormatName.bin_16() then
+        b.u16_be()?.usize()
+      elseif t == _FormatName.bin_32() then
+        b.u32_be()?.usize()
+      else
+        error
+      end
 
     b.block(len.usize())?
 
@@ -497,7 +471,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // array format family
   //
-
   fun fixarray(b: ZeroCopyReader): U8 ? =>
     """
     Reads a header for a MessgePack "fixarray". This only reads
@@ -533,7 +506,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // map format family
   //
-
   fun fixmap(b: ZeroCopyReader): U8 ? =>
     """
     Reads a header for a MessgePack "fixmap". This only reads the
@@ -569,7 +541,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // ext format family
   //
-
   fun ext(b: ZeroCopyReader): (U8, Array[U8] val) ? =>
     """
     Allows for the reading of user supplied extensions to the
@@ -581,25 +552,26 @@ primitive MessagePackZeroCopyDecoder
     """
     let t = _read_type(b)?
 
-    let size: USize = if t == _FormatName.fixext_1() then
-      1
-    elseif t == _FormatName.fixext_2() then
-      2
-    elseif t == _FormatName.fixext_4() then
-      4
-    elseif t == _FormatName.fixext_8() then
-      8
-    elseif t == _FormatName.fixext_16() then
-      16
-    elseif t == _FormatName.ext_8() then
-      b.u8()?.usize()
-    elseif t == _FormatName.ext_16() then
-      b.u16_be()?.usize()
-    elseif t == _FormatName.ext_32() then
-      b.u32_be()?.usize()
-    else
-      error
-    end
+    let size: USize =
+      if t == _FormatName.fixext_1() then
+        1
+      elseif t == _FormatName.fixext_2() then
+        2
+      elseif t == _FormatName.fixext_4() then
+        4
+      elseif t == _FormatName.fixext_8() then
+        8
+      elseif t == _FormatName.fixext_16() then
+        16
+      elseif t == _FormatName.ext_8() then
+        b.u8()?.usize()
+      elseif t == _FormatName.ext_16() then
+        b.u16_be()?.usize()
+      elseif t == _FormatName.ext_32() then
+        b.u32_be()?.usize()
+      else
+        error
+      end
 
     (b.u8()?, b.block(size)?)
 
@@ -737,12 +709,16 @@ primitive MessagePackZeroCopyDecoder
   //
   // timestamp format family
   //
-
   // Note: MessagePackStreamingDecoder pre-validates total size
   // before calling this method. If the read sequence here
   // changes, update the size checks in _decode_fixext and
   // _decode_ext_variable.
   fun timestamp(b: ZeroCopyReader): (I64, U32) ? =>
+    """
+    Decodes a MessagePack timestamp extension.
+
+    Returns a tuple of (seconds, nanoseconds).
+    """
     let t = _read_type(b)?
 
     b.i8()?
@@ -767,7 +743,6 @@ primitive MessagePackZeroCopyDecoder
   //
   // skip
   //
-
   fun skip(b: ZeroCopyReader ref) ? =>
     """
     Advances past one complete MessagePack value without
@@ -792,18 +767,18 @@ primitive MessagePackZeroCopyDecoder
         offset = offset + 1
       elseif fb <= 0x8F then
         // fixmap: 1 byte header, count * 2 values
-        remaining = remaining
-          + ((fb and 0x0F).usize() * 2)
+        remaining =
+          remaining + ((fb and 0x0F).usize() * 2)
         offset = offset + 1
       elseif fb <= 0x9F then
         // fixarray: 1 byte header, count values
-        remaining = remaining
-          + (fb and 0x0F).usize()
+        remaining =
+          remaining + (fb and 0x0F).usize()
         offset = offset + 1
       elseif fb <= 0xBF then
         // fixstr: 1 byte header + data
-        offset = offset + 1
-          + (fb and 0x1F).usize()
+        offset =
+          (offset + 1) + (fb and 0x1F).usize()
       elseif fb == _FormatName.nil() then
         offset = offset + 1
       elseif fb == 0xC1 then
@@ -895,25 +870,23 @@ primitive MessagePackZeroCopyDecoder
       elseif fb <= _FormatName.array_32() then
         // array_16/32
         if fb == _FormatName.array_16() then
-          remaining = remaining
-            + b.peek_u16_be(offset + 1)?.usize()
+          let c = b.peek_u16_be(offset + 1)?.usize()
+          remaining = remaining + c
           offset = offset + 3
         else
-          remaining = remaining
-            + b.peek_u32_be(offset + 1)?.usize()
+          let c = b.peek_u32_be(offset + 1)?.usize()
+          remaining = remaining + c
           offset = offset + 5
         end
       elseif fb <= _FormatName.map_32() then
         // map_16/32
         if fb == _FormatName.map_16() then
-          remaining = remaining
-            + (b.peek_u16_be(offset + 1)?.usize()
-              * 2)
+          let c = b.peek_u16_be(offset + 1)?.usize()
+          remaining = remaining + (c * 2)
           offset = offset + 3
         else
-          remaining = remaining
-            + (b.peek_u32_be(offset + 1)?.usize()
-              * 2)
+          let c = b.peek_u32_be(offset + 1)?.usize()
+          remaining = remaining + (c * 2)
           offset = offset + 5
         end
       else
@@ -926,6 +899,5 @@ primitive MessagePackZeroCopyDecoder
   //
   // support functions
   //
-
   fun _read_type(b: ZeroCopyReader): MessagePackType ? =>
     b.u8()?

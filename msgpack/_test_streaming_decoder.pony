@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 use "buffered"
 use "pony_check"
 use "pony_test"
@@ -27,7 +9,7 @@ primitive _WriterBytes
   fun apply(w: Writer ref): Array[U8] val =>
     let out = recover iso Array[U8] end
     for chunk in w.done().values() do
-      match chunk
+      match \exhaustive\ chunk
       | let a: Array[U8] val => out.append(a)
       | let s: String val => out.append(s.array())
       end
@@ -185,7 +167,6 @@ actor \nodoc\ _TestStreamingDecoder is TestList
 //
 // Roundtrip tests
 //
-
 class \nodoc\ _TestStreamDecodeNil is UnitTest
   fun name(): String => "msgpack/StreamDecodeNil"
 
@@ -706,7 +687,6 @@ class \nodoc\ _TestStreamDecodeExt32 is UnitTest
 //
 // Streaming-specific tests
 //
-
 class \nodoc\ _TestStreamEmptyReturnsNotEnoughData is UnitTest
   fun name(): String => "msgpack/StreamEmptyReturnsNotEnoughData"
 
@@ -1026,7 +1006,6 @@ class \nodoc\ _TestStreamPartialThenMultiple is UnitTest
 //
 // Timestamp tests
 //
-
 class \nodoc\ _TestStreamTimestamp32 is UnitTest
   fun name(): String => "msgpack/StreamTimestamp32"
 
@@ -1097,8 +1076,8 @@ class \nodoc\ _TestStreamTimestampPartial is UnitTest
       | NotEnoughData => None
       else
         h.fail(
-          "expected NotEnoughData at byte "
-            + i.string())
+          "expected NotEnoughData at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1137,8 +1116,8 @@ class \nodoc\ _TestStreamTimestamp64Partial is UnitTest
       | NotEnoughData => None
       else
         h.fail(
-          "expected NotEnoughData at byte "
-            + i.string())
+          "expected NotEnoughData at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1177,8 +1156,8 @@ class \nodoc\ _TestStreamTimestamp96Partial is UnitTest
       | NotEnoughData => None
       else
         h.fail(
-          "expected NotEnoughData at byte "
-            + i.string())
+          "expected NotEnoughData at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1219,7 +1198,6 @@ class \nodoc\ _TestStreamExt8NotTimestamp is UnitTest
 //
 // Property-based tests
 //
-
 class \nodoc\ _PropertyStreamU32Safety is Property1[U32]
   """
   For any U32, encoding as uint_32 and feeding to the streaming
@@ -1246,8 +1224,8 @@ class \nodoc\ _PropertyStreamU32Safety is Property1[U32]
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1291,8 +1269,8 @@ class \nodoc\ _PropertyStreamI16Safety is Property1[I16]
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1337,8 +1315,8 @@ class \nodoc\ _PropertyStreamStr8Safety is Property1[String]
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1383,8 +1361,8 @@ class \nodoc\ _PropertyStreamTimestamp32Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1417,9 +1395,8 @@ class \nodoc\ _PropertyStreamBin16Safety is Property1[U8]
     Generators.u8()
 
   fun ref property(arg1: U8, h: PropertyHelper) ? =>
-    let data = recover val
-      Array[U8].init('X', arg1.usize())
-    end
+    let data =
+      recover val Array[U8].init('X', arg1.usize()) end
     let w: Writer ref = Writer
     MessagePackEncoder.bin_16(w, data)?
     let bytes = _WriterBytes(w)
@@ -1433,8 +1410,8 @@ class \nodoc\ _PropertyStreamBin16Safety is Property1[U8]
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1481,8 +1458,8 @@ class \nodoc\ _PropertyStreamStr32Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1533,8 +1510,8 @@ class \nodoc\ _PropertyStreamFixext4Safety is Property1[U8]
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -1565,7 +1542,6 @@ class \nodoc\ _PropertyStreamFixext4Safety is Property1[U8]
 //
 // Limit tests
 //
-
 class \nodoc\ _TestStreamLimitFixext is UnitTest
   """
   A fixext_16 (16 bytes data) is rejected when max_ext_len is 15.
@@ -1576,8 +1552,9 @@ class \nodoc\ _TestStreamLimitFixext is UnitTest
     let w: Writer ref = Writer
     let value = recover val Array[U8].init('V', 16) end
     MessagePackEncoder.fixext_16(w, 40, value)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(where max_ext_len' = 15))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(where max_ext_len' = 15))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1593,8 +1570,9 @@ class \nodoc\ _TestStreamLimitMap is UnitTest
   fun ref apply(h: TestHelper) =>
     let w: Writer ref = Writer
     MessagePackEncoder.map_16(w, 100)
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(where max_map_len' = 99))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(where max_map_len' = 99))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1611,9 +1589,10 @@ class \nodoc\ _TestStreamLimitArray32 is UnitTest
   fun ref apply(h: TestHelper) =>
     let w: Writer ref = Writer
     MessagePackEncoder.array_32(w, 200_000)
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_array_len' = 131_072))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_array_len' = 131_072))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1630,9 +1609,10 @@ class \nodoc\ _TestStreamLimitMap32 is UnitTest
   fun ref apply(h: TestHelper) =>
     let w: Writer ref = Writer
     MessagePackEncoder.map_32(w, 200_000)
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_map_len' = 131_072))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_map_len' = 131_072))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1652,9 +1632,10 @@ class \nodoc\ _TestStreamLimitStr16 is UnitTest
       String.from_iso_array(consume data)
     let w: Writer ref = Writer
     MessagePackEncoder.str_16(w, s)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_str_len' = 250))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_str_len' = 250))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1669,14 +1650,16 @@ class \nodoc\ _TestStreamLimitBin16 is UnitTest
   fun name(): String => "msgpack/StreamLimitBin16"
 
   fun ref apply(h: TestHelper) ? =>
-    let data = recover val
-      Array[U8].init('B', 300)
-    end
+    let data =
+      recover val
+        Array[U8].init('B', 300)
+      end
     let w: Writer ref = Writer
     MessagePackEncoder.bin_16(w, data)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_bin_len' = 250))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_bin_len' = 250))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1691,14 +1674,16 @@ class \nodoc\ _TestStreamLimitExt16 is UnitTest
   fun name(): String => "msgpack/StreamLimitExt16"
 
   fun ref apply(h: TestHelper) ? =>
-    let data = recover val
-      Array[U8].init('C', 300)
-    end
+    let data =
+      recover val
+        Array[U8].init('C', 300)
+      end
     let w: Writer ref = Writer
     MessagePackEncoder.ext_16(w, 42, data)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_ext_len' = 250))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_ext_len' = 250))
     sd.append(_WriterBytes(w))
     match sd.next()
     | LimitExceeded => None
@@ -1716,8 +1701,9 @@ class \nodoc\ _TestStreamLimitNoConsume is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, "hello world")?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(where max_str_len' = 5))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(where max_str_len' = 5))
     sd.append(_WriterBytes(w))
 
     // First call: LimitExceeded
@@ -1743,8 +1729,9 @@ class \nodoc\ _TestStreamLimitUnlimited is UnitTest
   fun ref apply(h: TestHelper) =>
     let w: Writer ref = Writer
     MessagePackEncoder.array_32(w, 200_000)
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits.unlimited())
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits.unlimited())
     sd.append(_WriterBytes(w))
     match sd.next()
     | let v: MessagePackArray =>
@@ -1761,8 +1748,9 @@ class \nodoc\ _TestStreamLimitAtBoundary is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, "1234567890")?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(where max_str_len' = 10))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(where max_str_len' = 10))
     sd.append(_WriterBytes(w))
     match sd.next()
     | let v: String val =>
@@ -1773,7 +1761,6 @@ class \nodoc\ _TestStreamLimitAtBoundary is UnitTest
 //
 // Limit property-based tests
 //
-
 class \nodoc\ _PropertyStreamLimitStr
   is Property1[String]
   """
@@ -1791,9 +1778,10 @@ class \nodoc\ _PropertyStreamLimitStr
     let s: String val = arg1.clone()
     let w: Writer ref = Writer
     MessagePackEncoder.str(w, s)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_str_len' = 50))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_str_len' = 50))
     sd.append(_WriterBytes(w))
 
     if s.size() > 50 then
@@ -1801,8 +1789,8 @@ class \nodoc\ _PropertyStreamLimitStr
       | LimitExceeded => None
       else
         h.fail(
-          "expected LimitExceeded for size "
-            + s.size().string())
+          "expected LimitExceeded for size " +
+            s.size().string())
       end
     else
       match sd.next()
@@ -1810,8 +1798,8 @@ class \nodoc\ _PropertyStreamLimitStr
         h.assert_eq[String](s, v)
       else
         h.fail(
-          "expected String for size "
-            + s.size().string())
+          "expected String for size " +
+            s.size().string())
       end
     end
 
@@ -1828,14 +1816,14 @@ class \nodoc\ _PropertyStreamLimitBin
     Generators.u8()
 
   fun ref property(arg1: U8, h: PropertyHelper) ? =>
-    let data = recover val
-      Array[U8].init('X', arg1.usize())
-    end
+    let data =
+      recover val Array[U8].init('X', arg1.usize()) end
     let w: Writer ref = Writer
     MessagePackEncoder.bin(w, data)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_bin_len' = 100))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_bin_len' = 100))
     sd.append(_WriterBytes(w))
 
     if arg1.usize() > 100 then
@@ -1843,8 +1831,8 @@ class \nodoc\ _PropertyStreamLimitBin
       | LimitExceeded => None
       else
         h.fail(
-          "expected LimitExceeded for size "
-            + arg1.string())
+          "expected LimitExceeded for size " +
+            arg1.string())
       end
     else
       match sd.next()
@@ -1853,8 +1841,8 @@ class \nodoc\ _PropertyStreamLimitBin
           arg1.usize(), v.size())
       else
         h.fail(
-          "expected Array[U8] for size "
-            + arg1.string())
+          "expected Array[U8] for size " +
+            arg1.string())
       end
     end
 
@@ -1874,9 +1862,10 @@ class \nodoc\ _PropertyStreamLimitArray
   fun ref property(arg1: U16, h: PropertyHelper) =>
     let w: Writer ref = Writer
     MessagePackEncoder.array(w, arg1.u32())
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_array_len' = 1000))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_array_len' = 1000))
     sd.append(_WriterBytes(w))
 
     if arg1.u32() > 1000 then
@@ -1884,8 +1873,8 @@ class \nodoc\ _PropertyStreamLimitArray
       | LimitExceeded => None
       else
         h.fail(
-          "expected LimitExceeded for count "
-            + arg1.string())
+          "expected LimitExceeded for count " +
+            arg1.string())
       end
     else
       match sd.next()
@@ -1893,8 +1882,8 @@ class \nodoc\ _PropertyStreamLimitArray
         h.assert_eq[U32](arg1.u32(), v.size)
       else
         h.fail(
-          "expected MessagePackArray for count "
-            + arg1.string())
+          "expected MessagePackArray for count " +
+            arg1.string())
       end
     end
 
@@ -1912,14 +1901,16 @@ class \nodoc\ _PropertyStreamLimitExt
     Generators.u8()
 
   fun ref property(arg1: U8, h: PropertyHelper) ? =>
-    let data = recover val
-      Array[U8].init('Z', arg1.usize())
-    end
+    let data =
+      recover val
+        Array[U8].init('Z', arg1.usize())
+      end
     let w: Writer ref = Writer
     MessagePackEncoder.ext(w, 42, data)?
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_ext_len' = 100))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_ext_len' = 100))
     sd.append(_WriterBytes(w))
 
     if arg1.usize() > 100 then
@@ -1927,8 +1918,8 @@ class \nodoc\ _PropertyStreamLimitExt
       | LimitExceeded => None
       else
         h.fail(
-          "expected LimitExceeded for size "
-            + arg1.string())
+          "expected LimitExceeded for size " +
+            arg1.string())
       end
     else
       match sd.next()
@@ -1938,15 +1929,14 @@ class \nodoc\ _PropertyStreamLimitExt
           arg1.usize(), v.data.size())
       else
         h.fail(
-          "expected MessagePackExt for size "
-            + arg1.string())
+          "expected MessagePackExt for size " +
+            arg1.string())
       end
     end
 
 //
 // Depth limit tests
 //
-
 class \nodoc\ _TestStreamDepthBasic is UnitTest
   """
   Nested arrays at depth 2 succeed with max_depth=2.
@@ -1961,9 +1951,10 @@ class \nodoc\ _TestStreamDepthBasic is UnitTest
     MessagePackEncoder.fixarray(w, 1)?
     MessagePackEncoder.uint(w, 1)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 2))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 2))
     sd.append(_WriterBytes(w))
 
     // Outer array at depth 1 — succeeds
@@ -1994,9 +1985,10 @@ class \nodoc\ _TestStreamDepthBasic is UnitTest
     MessagePackEncoder.fixarray(w2, 1)?
     MessagePackEncoder.uint(w2, 1)
 
-    let sd2 = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 2))
+    let sd2 =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 2))
     sd2.append(_WriterBytes(w2))
 
     // Depth 1 — succeeds
@@ -2034,9 +2026,10 @@ class \nodoc\ _TestStreamDepthExact is UnitTest
     end
     MessagePackEncoder.uint(w, 42)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 5))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 5))
     sd.append(_WriterBytes(w))
 
     // All 5 arrays should succeed
@@ -2044,8 +2037,8 @@ class \nodoc\ _TestStreamDepthExact is UnitTest
     while i < 5 do
       match sd.next()
       | let a: MessagePackArray => None
-      else h.fail("expected array at depth "
-        + (i + 1).string())
+      else h.fail("expected array at depth " +
+        (i + 1).string())
       end
       i = i + 1
     end
@@ -2066,9 +2059,10 @@ class \nodoc\ _TestStreamDepthExact is UnitTest
     end
     MessagePackEncoder.uint(w2, 42)
 
-    let sd2 = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 5))
+    let sd2 =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 5))
     sd2.append(_WriterBytes(w2))
 
     // First 5 succeed
@@ -2076,8 +2070,8 @@ class \nodoc\ _TestStreamDepthExact is UnitTest
     while i < 5 do
       match sd2.next()
       | let a: MessagePackArray => None
-      else h.fail("expected array at depth "
-        + (i + 1).string())
+      else h.fail("expected array at depth " +
+        (i + 1).string())
       end
       i = i + 1
     end
@@ -2103,8 +2097,9 @@ class \nodoc\ _TestStreamDepthAutoTrack is UnitTest
     MessagePackEncoder.uint(w, 2)
     MessagePackEncoder.uint(w, 3)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits.unlimited())
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits.unlimited())
     sd.append(_WriterBytes(w))
 
     // Array(2) -> depth 1
@@ -2162,9 +2157,10 @@ class \nodoc\ _TestStreamDepthMap is UnitTest
     MessagePackEncoder.str(w, "b")?
     MessagePackEncoder.uint(w, 1)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 1))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 1))
     sd.append(_WriterBytes(w))
 
     // Outer map at depth 1 — succeeds
@@ -2203,8 +2199,9 @@ class \nodoc\ _TestStreamDepthMixed is UnitTest
     MessagePackEncoder.fixarray(w, 1)?
     MessagePackEncoder.uint(w, 1)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits.unlimited())
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits.unlimited())
     sd.append(_WriterBytes(w))
 
     // Array -> depth 1
@@ -2257,9 +2254,10 @@ class \nodoc\ _TestStreamDepthNoConsume is UnitTest
     MessagePackEncoder.fixarray(w, 1)?
     MessagePackEncoder.uint(w, 1)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 1))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 1))
     sd.append(_WriterBytes(w))
 
     // Depth 1 — succeeds
@@ -2296,8 +2294,9 @@ class \nodoc\ _TestStreamDepthUnlimited is UnitTest
     end
     MessagePackEncoder.uint(w, 99)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits.unlimited())
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits.unlimited())
     sd.append(_WriterBytes(w))
 
     // All 50 arrays should decode
@@ -2305,8 +2304,8 @@ class \nodoc\ _TestStreamDepthUnlimited is UnitTest
     while i < 50 do
       match sd.next()
       | let a: MessagePackArray => None
-      else h.fail("expected array at depth "
-        + (i + 1).string())
+      else h.fail("expected array at depth " +
+        (i + 1).string())
       end
       i = i + 1
     end
@@ -2330,9 +2329,10 @@ class \nodoc\ _TestStreamDepthZero is UnitTest
     let w: Writer ref = Writer
     MessagePackEncoder.uint(w, 42)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = 0))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = 0))
     sd.append(_WriterBytes(w))
 
     // Scalar at depth 0 — works
@@ -2365,8 +2365,9 @@ class \nodoc\ _TestStreamDepthEmptyContainer is UnitTest
     MessagePackEncoder.fixarray(w, 0)?
     MessagePackEncoder.uint(w, 1)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits.unlimited())
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits.unlimited())
     sd.append(_WriterBytes(w))
 
     // Outer array
@@ -2436,9 +2437,10 @@ class \nodoc\ _PropertyStreamDepth is Property1[U8]
     end
     MessagePackEncoder.uint(w, 42)
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_depth' = max_depth))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_depth' = max_depth))
     sd.append(_WriterBytes(w))
 
     if nesting > max_depth then
@@ -2448,8 +2450,8 @@ class \nodoc\ _PropertyStreamDepth is Property1[U8]
         match sd.next()
         | let a: MessagePackArray => None
         else
-          h.fail("expected array at depth "
-            + (i + 1).string())
+          h.fail("expected array at depth " +
+            (i + 1).string())
           return
         end
         i = i + 1
@@ -2458,9 +2460,9 @@ class \nodoc\ _PropertyStreamDepth is Property1[U8]
       match sd.next()
       | LimitExceeded => None
       else
-        h.fail("expected LimitExceeded at depth "
-          + (max_depth + 1).string()
-          + " with nesting " + nesting.string())
+        h.fail("expected LimitExceeded at depth " +
+          (max_depth + 1).string() +
+          " with nesting " + nesting.string())
       end
     else
       // All containers should decode
@@ -2469,8 +2471,8 @@ class \nodoc\ _PropertyStreamDepth is Property1[U8]
         match sd.next()
         | let a: MessagePackArray => None
         else
-          h.fail("expected array at depth "
-            + (i + 1).string())
+          h.fail("expected array at depth " +
+            (i + 1).string())
           return
         end
         i = i + 1
@@ -2490,7 +2492,6 @@ class \nodoc\ _PropertyStreamDepth is Property1[U8]
 //
 // Skip tests
 //
-
 class \nodoc\ _TestStreamSkipNil is UnitTest
   fun name(): String => "msgpack/StreamSkipNil"
 
@@ -2565,8 +2566,9 @@ class \nodoc\ _TestStreamSkipArray32 is UnitTest
         MessagePackEncoder.uint(w, 1)
         i = i + 1
       end
-      let sd = MessagePackStreamingDecoder(
-        MessagePackDecodeLimits.unlimited())
+      let sd =
+        MessagePackStreamingDecoder(
+          MessagePackDecodeLimits.unlimited())
       sd.append(_WriterBytes(w))
       match sd.skip()
       | None => None
@@ -2620,8 +2622,9 @@ class \nodoc\ _TestStreamSkipMap32 is UnitTest
         MessagePackEncoder.uint(w, 2)
         i = i + 1
       end
-      let sd = MessagePackStreamingDecoder(
-        MessagePackDecodeLimits.unlimited())
+      let sd =
+        MessagePackStreamingDecoder(
+          MessagePackDecodeLimits.unlimited())
       sd.append(_WriterBytes(w))
       match sd.skip()
       | None => None
@@ -2785,9 +2788,10 @@ class \nodoc\ _TestStreamSkipLimitExceeded is UnitTest
       i = i + 1
     end
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_skip_values' = 10))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_skip_values' = 10))
     sd.append(_WriterBytes(w))
 
     // 11 values to traverse, limit is 10
@@ -2811,9 +2815,10 @@ class \nodoc\ _TestStreamSkipLimitNoConsume is UnitTest
       i = i + 1
     end
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_skip_values' = 1))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_skip_values' = 1))
     sd.append(_WriterBytes(w))
 
     // First call: LimitExceeded
@@ -2993,7 +2998,6 @@ class \nodoc\ _TestStreamSkipInsideContainer is UnitTest
 //
 // Skip property-based tests
 //
-
 class \nodoc\ _PropertyStreamSkipU32Safety
   is Property1[U32]
   """
@@ -3020,8 +3024,8 @@ class \nodoc\ _PropertyStreamSkipU32Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -3064,8 +3068,8 @@ class \nodoc\ _PropertyStreamSkipI16Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -3110,8 +3114,8 @@ class \nodoc\ _PropertyStreamSkipStr8Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -3162,8 +3166,8 @@ class \nodoc\ _PropertyStreamSkipFixext4Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -3194,9 +3198,8 @@ class \nodoc\ _PropertyStreamSkipBin16Safety
     Generators.u8()
 
   fun ref property(arg1: U8, h: PropertyHelper) ? =>
-    let data = recover val
-      Array[U8].init('X', arg1.usize())
-    end
+    let data =
+      recover val Array[U8].init('X', arg1.usize()) end
     let w: Writer ref = Writer
     MessagePackEncoder.bin_16(w, data)?
     let bytes = _WriterBytes(w)
@@ -3210,8 +3213,8 @@ class \nodoc\ _PropertyStreamSkipBin16Safety
       | NotEnoughData => None
       else
         h.fail(
-          "NotEnoughData expected at byte "
-            + i.string())
+          "NotEnoughData expected at byte " +
+            i.string())
         return
       end
       i = i + 1
@@ -3253,9 +3256,10 @@ class \nodoc\ _PropertyStreamSkipLimitArray
       i = i + 1
     end
 
-    let sd = MessagePackStreamingDecoder(
-      MessagePackDecodeLimits(
-        where max_skip_values' = max_skip))
+    let sd =
+      MessagePackStreamingDecoder(
+        MessagePackDecodeLimits(
+          where max_skip_values' = max_skip))
     sd.append(_WriterBytes(w))
 
     // Total values traversed = count + 1 (the array itself)
@@ -3264,16 +3268,16 @@ class \nodoc\ _PropertyStreamSkipLimitArray
       | LimitExceeded => None
       else
         h.fail(
-          "expected LimitExceeded for count "
-            + count.string())
+          "expected LimitExceeded for count " +
+            count.string())
       end
     else
       match sd.skip()
       | None => None
       else
         h.fail(
-          "expected None for count "
-            + count.string())
+          "expected None for count " +
+            count.string())
       end
     end
 
@@ -3284,8 +3288,9 @@ class \nodoc\ _TestStreamDecodeFixstrUtf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.fixstr(w, "hello")?
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(
+        where validate_utf8' = true)
     sd.append(_WriterBytes(w))
     match sd.next()
     | let v: String val =>
@@ -3302,8 +3307,9 @@ class \nodoc\ _TestStreamDecodeFixstrUtf8Invalid
     let w: Writer ref = Writer
     let invalid = recover val [as U8: 0xFF; 0xFE] end
     MessagePackEncoder.fixstr(w, invalid)?
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(
+        where validate_utf8' = true)
     sd.append(_WriterBytes(w))
     match sd.next()
     | InvalidUtf8 => None
@@ -3317,8 +3323,9 @@ class \nodoc\ _TestStreamDecodeStr8Utf8 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let w: Writer ref = Writer
     MessagePackEncoder.str_8(w, "hello")?
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(
+        where validate_utf8' = true)
     sd.append(_WriterBytes(w))
     match sd.next()
     | let v: String val =>
@@ -3335,8 +3342,9 @@ class \nodoc\ _TestStreamDecodeStr8Utf8Invalid
     let w: Writer ref = Writer
     let invalid = recover val [as U8: 0xFF; 0xFE] end
     MessagePackEncoder.str_8(w, invalid)?
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(
+        where validate_utf8' = true)
     sd.append(_WriterBytes(w))
     match sd.next()
     | InvalidUtf8 => None
@@ -3374,29 +3382,30 @@ class \nodoc\ _PropertyStreamStrUtf8Roundtrip
     "msgpack/PropertyStreamStrUtf8Roundtrip"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()
     let w: Writer ref = Writer
     MessagePackEncoder.str(w, s)?
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(
+        where validate_utf8' = true)
     sd.append(_WriterBytes(w))
     match sd.next()
     | let v: String val =>
       h.assert_eq[String](s, v)
     else
       h.fail(
-        "expected String for size "
-          + s.size().string())
+        "expected String for size " +
+          s.size().string())
     end

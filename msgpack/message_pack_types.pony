@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 primitive NotEnoughData
   """
   Returned when the reader doesn't have enough data to decode the
@@ -97,32 +79,6 @@ class val MessagePackExt
     ext_type = ext_type'
     data = data'
 
-/*
-Union of all possible values returned by the streaming decoder.
-
-Multiple MessagePack wire formats collapse into the same Pony
-type. For example:
-
-* `positive_fixint` (1 byte) and `uint_8` (2 bytes) both
-  decode to `U8`.
-* `negative_fixint` (1 byte) and `int_8` (2 bytes) both
-  decode to `I8`.
-* `fixstr`, `str_8`, `str_16`, and `str_32` all decode to
-  `String val`.
-* `fixarray`, `array_16`, and `array_32` all decode to
-  `MessagePackArray`.
-* `fixmap`, `map_16`, and `map_32` all decode to
-  `MessagePackMap`.
-* `bin_8`, `bin_16`, and `bin_32` all decode to
-  `Array[U8] val`.
-* `fixext_1/2/4/8/16`, `ext_8`, `ext_16`, and `ext_32` all
-  decode to `MessagePackExt`.
-
-This is an intentional trade-off: a value-oriented API has no
-reason to preserve the encoding's size optimization choices.
-A caller seeing `U8(42)` cannot tell whether the encoder used
-the compact `positive_fixint` or the explicit `uint_8` format.
-*/
 type MessagePackValue is
   ( None
   | Bool

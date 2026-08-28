@@ -4,19 +4,6 @@ use "../../msgpack"
 use "buffered"
 
 actor Main
-  """
-  Demonstrates three approaches to UTF-8 validation when
-  encoding or decoding MessagePack str values.
-
-  1. **Validate on encode** — `str_utf8` rejects invalid bytes
-     before they enter the wire format.
-  2. **Validate on streaming decode** — the streaming decoder's
-     `validate_utf8` option returns `InvalidUtf8` for invalid
-     strings.
-  3. **Decode then validate manually** — decode without
-     validation, then check with `MessagePackValidateUTF8`.
-     The raw bytes remain accessible on failure.
-  """
   new create(env: Env) =>
     _validate_on_encode(env)
     _validate_on_streaming_decode(env)
@@ -71,8 +58,8 @@ actor Main
     end
 
     // Decode with validation enabled
-    let sd = MessagePackStreamingDecoder(
-      where validate_utf8' = true)
+    let sd =
+      MessagePackStreamingDecoder(where validate_utf8' = true)
     for bs in w.done().values() do
       sd.append(bs)
     end
@@ -115,9 +102,9 @@ actor Main
       if MessagePackValidateUTF8(s) then
         env.out.print("valid UTF-8: " + s)
       else
-        env.out.print("invalid UTF-8 detected manually"
-          + " (raw bytes still available, size="
-          + s.size().string() + ")")
+        env.out.print("invalid UTF-8 detected manually" +
+          " (raw bytes still available, size=" +
+          s.size().string() + ")")
       end
     else
       env.out.print("decode error (unexpected)")

@@ -4,17 +4,6 @@ use "../../msgpack"
 use "buffered"
 
 actor Main
-  """
-  Demonstrates `MessagePackDecodeLimits` with the streaming
-  decoder. When decoding data from untrusted sources, limits
-  prevent denial-of-service attacks where a malicious payload
-  claims enormous sizes for strings, binary data, or container
-  counts.
-
-  This example sets a tight `max_str_len` of 10 bytes, then
-  shows that a short string decodes successfully while a longer
-  string is rejected with `LimitExceeded`.
-  """
   new create(env: Env) =>
     try
       _decode_limits(env)?
@@ -23,8 +12,8 @@ actor Main
     end
 
   fun _decode_limits(env: Env) ? =>
-    let limits = MessagePackDecodeLimits(
-      where max_str_len' = 10)
+    let limits =
+      MessagePackDecodeLimits(where max_str_len' = 10)
     let sd = MessagePackStreamingDecoder(limits)
 
     // Encode a short string (5 bytes — within limit)

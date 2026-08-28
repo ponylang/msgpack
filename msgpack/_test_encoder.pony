@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 use "buffered"
 use "collections"
 use "pony_check"
@@ -23,7 +5,9 @@ use "pony_test"
 
 actor \nodoc\ _TestEncoder is TestList
   """
-  These tests include information from the [MessagePack specification](https://github.com/msgpack/msgpack/blob/master/spec.md).
+  These tests include information from the
+  [MessagePack specification](
+  https://github.com/msgpack/msgpack/blob/master/spec.md).
 
   ### Notation in test diagrams.
 
@@ -371,9 +355,12 @@ class \nodoc\ _TestEncodeUint32 is UnitTest
 class \nodoc\ _TestEncodeUint64 is UnitTest
   """
   uint 64 stores a 64-bit big-endian unsigned integer
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
-  |  0xcf  |ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+
+  ```
+  +------+------+------+------+------+------+------+------+------+
+  | 0xcf | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ |
+  +------+------+------+------+------+------+------+------+------+
+  ```
   """
   fun name(): String =>
     "msgpack/EncodeUint64"
@@ -471,9 +458,12 @@ class \nodoc\ _TestEncodeInt32 is UnitTest
 class \nodoc\ _TestEncodeInt64 is UnitTest
   """
   int 64 stores a 64-bit big-endian signed integer
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
-  |  0xd3  |ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|ZZZZZZZZ|
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+
+  ```
+  +------+------+------+------+------+------+------+------+------+
+  | 0xd3 | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ | ZZZZ |
+  +------+------+------+------+------+------+------+------+------+
+  ```
   """
   fun name(): String =>
     "msgpack/EncodeInt64"
@@ -521,11 +511,14 @@ class \nodoc\ _TestEncodeFloat32 is UnitTest
 
 class \nodoc\ _TestEncodeFloat64 is UnitTest
   """
-  float 64 stores a floating point number in IEEE 754 double precision
-  floating point number format:
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
-  |  0xcb  |YYYYYYYY|YYYYYYYY|YYYYYYYY|YYYYYYYY|YYYYYYYY|YYYYYYYY|YYYYYYYY|YYYYYYYY|
-  +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+  float 64 stores a floating point number in IEEE 754 double
+  precision floating point number format:
+
+  ```
+  +------+------+------+------+------+------+------+------+------+
+  | 0xcb | YYYY | YYYY | YYYY | YYYY | YYYY | YYYY | YYYY | YYYY |
+  +------+------+------+------+------+------+------+------+------+
+  ```
   """
   fun name(): String =>
     "msgpack/EncodeFloat64"
@@ -1602,8 +1595,8 @@ class \nodoc\ _TestEncodeTimestamp96 is UnitTest
 
 class \nodoc\ _TestEncodeTimestamp96NsecsTooLarge is UnitTest
   """
-  Verify that `timestamp_96` throws an error if supplied a nanoseconds value larger
-  than 99999999.
+  Verify that `timestamp_96` throws an error if supplied a
+  nanoseconds value larger than 99999999.
   """
   fun name(): String =>
     "msgpack/EncodeTimestamp96NsecsTooLarge"
@@ -1632,12 +1625,24 @@ class \nodoc\ _TestEncodeCompactUint is UnitTest
     _check(h, 256, 3, _FormatName.uint_16())?    // uint_16 min
     _check(h, 65535, 3, _FormatName.uint_16())?  // uint_16 max
     _check(h, 65536, 5, _FormatName.uint_32())?  // uint_32 min
-    _check(h, U32.max_value().u64(), 5,
-      _FormatName.uint_32())?                    // uint_32 max
-    _check(h, U32.max_value().u64() + 1, 9,
-      _FormatName.uint_64())?                    // uint_64 min
-    _check(h, U64.max_value(), 9,
-      _FormatName.uint_64())?                    // uint_64 max
+    // uint_32 max
+    _check(
+      h,
+      U32.max_value().u64(),
+      5,
+      _FormatName.uint_32())?
+    // uint_64 min
+    _check(
+      h,
+      U32.max_value().u64() + 1,
+      9,
+      _FormatName.uint_64())?
+    // uint_64 max
+    _check(
+      h,
+      U64.max_value(),
+      9,
+      _FormatName.uint_64())?
 
   fun _check(
     h: TestHelper,
@@ -1655,9 +1660,13 @@ class \nodoc\ _TestEncodeCompactUint is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for " + v.string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for " + v.string())
 
 class \nodoc\ _TestEncodeCompactInt is UnitTest
@@ -1690,10 +1699,16 @@ class \nodoc\ _TestEncodeCompactInt is UnitTest
     // int_32
     _check(h, -32769, 5, _FormatName.int_32())?
     // uint_64
-    _check(h, U32.max_value().i64() + 1, 9,
+    _check(
+      h,
+      U32.max_value().i64() + 1,
+      9,
       _FormatName.uint_64())?
     // int_64
-    _check(h, I64.min_value(), 9,
+    _check(
+      h,
+      I64.min_value(),
+      9,
       _FormatName.int_64())?
 
   fun _check(
@@ -1712,9 +1727,13 @@ class \nodoc\ _TestEncodeCompactInt is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for " + v.string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for " + v.string())
 
 class \nodoc\ _TestEncodeCompactStr is UnitTest
@@ -1727,31 +1746,30 @@ class \nodoc\ _TestEncodeCompactStr is UnitTest
   fun ref apply(h: TestHelper) ? =>
     // fixstr boundaries
     let empty = recover val Array[U8] end
-    _check(h, empty, 1, 0xA0)?                  // 0: fixstr
-    let fix5 = recover val
-      Array[U8].init('A', 5)
-    end
-    _check(h, fix5, 6, 0xA5)?                   // 5: fixstr
-    let fix31 = recover val
-      Array[U8].init('A', 31)
-    end
-    _check(h, fix31, 32, 0xBF)?                  // 31: fixstr max
+    _check(h, empty, 1, 0xA0)?
+    let fix5 =
+      recover val Array[U8].init('A', 5) end
+    _check(h, fix5, 6, 0xA5)?
+    let fix31 =
+      recover val Array[U8].init('A', 31) end
+    _check(h, fix31, 32, 0xBF)?
 
     // str_8 boundaries
-    let s8_32 = recover val
-      Array[U8].init('B', 32)
-    end
-    _check(h, s8_32, 34, _FormatName.str_8())?   // 32: str_8 min
-    let s8_255 = recover val
-      Array[U8].init('B', 255)
-    end
-    _check(h, s8_255, 257, _FormatName.str_8())? // 255: str_8 max
+    let s8_32 =
+      recover val Array[U8].init('B', 32) end
+    _check(h, s8_32, 34, _FormatName.str_8())?
+    let s8_255 =
+      recover val Array[U8].init('B', 255) end
+    _check(h, s8_255, 257, _FormatName.str_8())?
 
     // str_16 boundary
-    let s16_256 = recover val
-      Array[U8].init('C', 256)
-    end
-    _check(h, s16_256, 259, _FormatName.str_16())? // 256: str_16 min
+    let s16_256 =
+      recover val Array[U8].init('C', 256) end
+    _check(
+      h,
+      s16_256,
+      259,
+      _FormatName.str_16())?
 
   fun _check(
     h: TestHelper,
@@ -1769,9 +1787,13 @@ class \nodoc\ _TestEncodeCompactStr is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for len=" + v.size().string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for len=" + v.size().string())
 
 class \nodoc\ _TestEncodeCompactBin is UnitTest
@@ -1784,21 +1806,22 @@ class \nodoc\ _TestEncodeCompactBin is UnitTest
   fun ref apply(h: TestHelper) ? =>
     // bin_8 boundaries
     let empty = recover val Array[U8] end
-    _check(h, empty, 2, _FormatName.bin_8())?     // 0: bin_8 min
-    let b8_5 = recover val
-      Array[U8].init('A', 5)
-    end
-    _check(h, b8_5, 7, _FormatName.bin_8())?      // 5: bin_8
-    let b8_255 = recover val
-      Array[U8].init('A', 255)
-    end
-    _check(h, b8_255, 257, _FormatName.bin_8())?  // 255: bin_8 max
+    _check(h, empty, 2, _FormatName.bin_8())?
+    let b8_5 =
+      recover val Array[U8].init('A', 5) end
+    _check(h, b8_5, 7, _FormatName.bin_8())?
+    let b8_255 =
+      recover val Array[U8].init('A', 255) end
+    _check(h, b8_255, 257, _FormatName.bin_8())?
 
     // bin_16 boundary
-    let b16_256 = recover val
-      Array[U8].init('B', 256)
-    end
-    _check(h, b16_256, 259, _FormatName.bin_16())? // 256: bin_16 min
+    let b16_256 =
+      recover val Array[U8].init('B', 256) end
+    _check(
+      h,
+      b16_256,
+      259,
+      _FormatName.bin_16())?
 
   fun _check(
     h: TestHelper,
@@ -1816,9 +1839,13 @@ class \nodoc\ _TestEncodeCompactBin is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for len=" + v.size().string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for len=" + v.size().string())
 
 class \nodoc\ _TestEncodeCompactArray is UnitTest
@@ -1855,9 +1882,13 @@ class \nodoc\ _TestEncodeCompactArray is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for " + s.string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for " + s.string())
 
 class \nodoc\ _TestEncodeCompactMap is UnitTest
@@ -1894,9 +1925,13 @@ class \nodoc\ _TestEncodeCompactMap is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[USize](expected_size, b.size(),
+    h.assert_eq[USize](
+      expected_size,
+      b.size(),
       "size for " + s.string())
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for " + s.string())
 
 class \nodoc\ _TestEncodeCompactExt is UnitTest
@@ -1926,9 +1961,8 @@ class \nodoc\ _TestEncodeCompactExt is UnitTest
     expected_format: U8)
     ?
   =>
-    let value = recover val
-      Array[U8].init('X', data_size)
-    end
+    let value =
+      recover val Array[U8].init('X', data_size) end
     let w: Writer ref = Writer
     let b = Reader
 
@@ -1938,7 +1972,9 @@ class \nodoc\ _TestEncodeCompactExt is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
+    h.assert_eq[U8](
+      expected_format,
+      b.peek_u8()?,
       "format for size=" + data_size.string())
 
 class \nodoc\ _TestEncodeCompactTimestamp is UnitTest
@@ -1950,34 +1986,62 @@ class \nodoc\ _TestEncodeCompactTimestamp is UnitTest
 
   fun ref apply(h: TestHelper) ? =>
     // timestamp_32 boundaries
-    _check(h, 0, 0, _FormatName.fixext_4(),
+    _check(
+      h,
+      0,
+      0,
+      _FormatName.fixext_4(),
       "ts32: sec=0 nsec=0")?
-    _check(h, 500, 0, _FormatName.fixext_4(),
+    _check(
+      h,
+      500,
+      0,
+      _FormatName.fixext_4(),
       "ts32: sec=500 nsec=0")?
-    _check(h, U32.max_value().i64(), 0,
+    _check(
+      h,
+      U32.max_value().i64(),
+      0,
       _FormatName.fixext_4(),
       "ts32: sec=U32.max nsec=0")?
 
     // timestamp_64 boundaries
     // nsec != 0 pushes to timestamp_64
-    _check(h, 500, 100, _FormatName.fixext_8(),
+    _check(
+      h,
+      500,
+      100,
+      _FormatName.fixext_8(),
       "ts64: sec=500 nsec=100")?
-    // sec > U32.max pushes to timestamp_64 even with nsec=0
-    _check(h, U32.max_value().i64() + 1, 0,
+    // sec > U32.max pushes to timestamp_64
+    _check(
+      h,
+      U32.max_value().i64() + 1,
+      0,
       _FormatName.fixext_8(),
       "ts64: sec=U32.max+1 nsec=0")?
     // sec at 34-bit max
-    _check(h, _Limit.sec_34().i64(), 0,
+    _check(
+      h,
+      _Limit.sec_34().i64(),
+      0,
       _FormatName.fixext_8(),
       "ts64: sec=2^34-1 nsec=0")?
 
     // timestamp_96 boundaries
     // sec exceeds 34-bit max
-    _check(h, _Limit.sec_34().i64() + 1, 0,
+    _check(
+      h,
+      _Limit.sec_34().i64() + 1,
+      0,
       _FormatName.ext_8(),
       "ts96: sec=2^34 nsec=0")?
     // negative sec
-    _check(h, -1000, 500, _FormatName.ext_8(),
+    _check(
+      h,
+      -1000,
+      500,
+      _FormatName.ext_8(),
       "ts96: sec=-1000 nsec=500")?
 
   fun _check(
@@ -1994,8 +2058,8 @@ class \nodoc\ _TestEncodeCompactTimestamp is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[U8](expected_format, b.peek_u8()?,
-      label)
+    h.assert_eq[U8](
+      expected_format, b.peek_u8()?, label)
 
 class \nodoc\ _TestEncodeFixstrUtf8 is UnitTest
   fun name(): String =>
@@ -2168,16 +2232,16 @@ class \nodoc\ _PropertyCompactStrUtf8EncoderRoundtrip
     "msgpack/PropertyCompactStrUtf8EncoderRoundtrip"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()

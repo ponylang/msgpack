@@ -1,26 +1,10 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 use "buffered"
 
 primitive MessagePackEncoder
   """
-  Implements low-level encoding into the [MessagePack serialization format](https://github.com/msgpack/msgpack/blob/master/spec.md).
+  Implements low-level encoding into the
+  [MessagePack serialization format](
+  https://github.com/msgpack/msgpack/blob/master/spec.md).
 
   You should be familiar with how MessagePack encodes messages if you use
   this API directly. There are very few guardrails preventing you from
@@ -42,7 +26,6 @@ primitive MessagePackEncoder
   // The format-specific methods below remain available for callers
   // who want explicit control over the wire format.
   //
-
   fun uint(b: Writer, v: U64) =>
     """
     Encodes an unsigned integer using the smallest format that
@@ -171,12 +154,12 @@ primitive MessagePackEncoder
     if nsec > _Limit.nsec() then
       error
     end
-    if (nsec == 0) and (sec >= 0)
-      and (sec <= U32.max_value().i64())
+    if (nsec == 0) and (sec >= 0) and
+      (sec <= U32.max_value().i64())
     then
       timestamp_32(b, sec.u32())
-    elseif (sec >= 0)
-      and (sec.u64() <= _Limit.sec_34())
+    elseif (sec >= 0) and
+      (sec.u64() <= _Limit.sec_34())
     then
       timestamp_64(b, sec.u64(), nsec)?
     else
@@ -186,7 +169,6 @@ primitive MessagePackEncoder
   //
   // nil format family
   //
-
   fun nil(b: Writer) =>
     """
     nil format stores nil in 1 byte.
@@ -196,7 +178,6 @@ primitive MessagePackEncoder
   //
   // bool format family
   //
-
   fun bool(b: Writer, t_or_f: Bool) =>
     """
     bool format family stores false or true in 1 byte.
@@ -210,7 +191,6 @@ primitive MessagePackEncoder
   //
   // int format family
   //
-
   fun positive_fixint(b: Writer, v: U8) ? =>
     """
     positive fixnum stores 7-bit positive integer.
@@ -301,7 +281,6 @@ primitive MessagePackEncoder
   //
   // float format family
   //
-
   fun float_32(b: Writer, v: F32) =>
     """
     float 32 stores a floating point number in IEEE 754 single precision
@@ -321,7 +300,6 @@ primitive MessagePackEncoder
   //
   // str format family
   //
-
   fun fixstr(b: Writer, v: ByteSeq) ? =>
     """
     fixstr stores a byte array whose length is upto 31 bytes.
@@ -354,7 +332,7 @@ primitive MessagePackEncoder
     """
     _write_byte_array_16(b, v, _FormatName.str_16())?
 
-   fun str_32(b: Writer, v: ByteSeq) ? =>
+  fun str_32(b: Writer, v: ByteSeq) ? =>
     """
     str 32 stores a byte array whose length is upto (2^32)-1.
 
@@ -366,7 +344,6 @@ primitive MessagePackEncoder
   //
   // str format family — UTF-8 validating variants
   //
-
   fun str_utf8(b: Writer, v: ByteSeq) ? =>
     """
     Encodes a string using the smallest format that fits the
@@ -429,16 +406,16 @@ primitive MessagePackEncoder
     str_32(b, v)?
 
   fun _validate_utf8(v: ByteSeq) ? =>
-    let s = match v
-    | let s': String val => s'
-    | let a: Array[U8] val => String.from_array(a)
-    end
+    let s =
+      match \exhaustive\ v
+      | let s': String val => s'
+      | let a: Array[U8] val => String.from_array(a)
+      end
     if not MessagePackValidateUTF8(s) then error end
 
   //
   // bin format family
   //
-
   fun bin_8(b: Writer, v: ByteSeq) ? =>
     """
     bin 8 stores a byte array whose length is upto (2^8)-1 bytes.
@@ -457,19 +434,18 @@ primitive MessagePackEncoder
     """
     _write_byte_array_16(b, v, _FormatName.bin_16())?
 
-   fun bin_32(b: Writer, v: ByteSeq) ? =>
-     """
-     bin 32 stores a byte array whose length is upto (2^32)-1 bytes.
+  fun bin_32(b: Writer, v: ByteSeq) ? =>
+    """
+    bin 32 stores a byte array whose length is upto (2^32)-1 bytes.
 
-     Attempting to encode a `ByteSeq` larger than (2^32)-1 bytes will result in
-     an `error`.
-     """
+    Attempting to encode a `ByteSeq` larger than (2^32)-1 bytes will result in
+    an `error`.
+    """
     _write_byte_array_32(b, v, _FormatName.bin_32())?
 
   //
   // array format family
   //
-
   fun fixarray(b: Writer, s: U8) ? =>
     """
     Creates a header for a MessagePack "fixarray". This only creates the
@@ -517,7 +493,6 @@ primitive MessagePackEncoder
   //
   // map format family
   //
-
   fun fixmap(b: Writer, s: U8) ? =>
     """
     Creates a header for a MessagePack "fixmap". This only creates the
@@ -565,7 +540,6 @@ primitive MessagePackEncoder
   //
   // ext format family
   //
-
   fun fixext_1(b: Writer, t: U8, v: ByteSeq) ? =>
     """
     Allows for the creation of user supplied extensions to the MessagePack
@@ -759,7 +733,6 @@ primitive MessagePackEncoder
   //
   // timestamp format family
   //
-
   fun timestamp_32(b: Writer, sec: U32) =>
     """
     timestamp 32 stores the number of seconds that have elapsed since 1970-01-01
@@ -817,7 +790,6 @@ primitive MessagePackEncoder
   //
   // support methods
   //
-
   fun _write_type(b: Writer, t: U8) =>
     b.u8(t)
 

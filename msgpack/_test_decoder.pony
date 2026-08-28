@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 use "buffered"
 use "collections"
 use "pony_check"
@@ -895,7 +877,7 @@ class \nodoc\ _TestDecodeTimestamp32 is UnitTest
   fun name(): String =>
     "msgpack/DecodeTimestamp32"
 
-  fun ref apply(h: TestHelper)? =>
+  fun ref apply(h: TestHelper) ? =>
     let encoded_sec: U32 = 500
     let b: Reader ref = Reader
     let w: Writer ref = Writer
@@ -914,7 +896,7 @@ class \nodoc\ _TestDecodeTimestamp64 is UnitTest
   fun name(): String =>
     "msgpack/DecodeTimestamp64"
 
-  fun ref apply(h: TestHelper)? =>
+  fun ref apply(h: TestHelper) ? =>
     let encoded_sec = U64(_Limit.sec_34())
     let encoded_nsec = U32(_Limit.nsec())
     let b: Reader ref = Reader
@@ -934,7 +916,7 @@ class \nodoc\ _TestDecodeTimestamp96 is UnitTest
   fun name(): String =>
     "msgpack/DecodeTimestamp96"
 
-  fun ref apply(h: TestHelper)? =>
+  fun ref apply(h: TestHelper) ? =>
     let encoded_sec = 0 - _Limit.sec_34().i64()
     let encoded_nsec = _Limit.nsec()
     let b: Reader ref = Reader
@@ -978,7 +960,9 @@ class \nodoc\ _TestDecodeCompactUint is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[U64](v, MessagePackDecoder.uint(b)?,
+    h.assert_eq[U64](
+      v,
+      MessagePackDecoder.uint(b)?,
       "roundtrip " + v.string())
 
 class \nodoc\ _TestDecodeCompactInt is UnitTest
@@ -1018,7 +1002,9 @@ class \nodoc\ _TestDecodeCompactInt is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[I64](v, MessagePackDecoder.int(b)?,
+    h.assert_eq[I64](
+      v,
+      MessagePackDecoder.int(b)?,
       "roundtrip " + v.string())
 
 class \nodoc\ _TestDecodeCompactStr is UnitTest
@@ -1033,10 +1019,11 @@ class \nodoc\ _TestDecodeCompactStr is UnitTest
     // fixstr (short string)
     _check(h, "Hello")?
     // str_8 (32 bytes, above fixstr limit)
-    let medium = recover val
-      String.from_array(
-        recover val Array[U8].init('M', 32) end)
-    end
+    let medium =
+      recover val
+        String.from_array(
+          recover val Array[U8].init('M', 32) end)
+      end
     _check(h, medium)?
 
   fun _check(h: TestHelper, v: String val) ? =>
@@ -1049,7 +1036,8 @@ class \nodoc\ _TestDecodeCompactStr is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[String](v,
+    h.assert_eq[String](
+      v,
       MessagePackDecoder.str(b)?,
       "roundtrip len=" + v.size().string())
 
@@ -1076,7 +1064,9 @@ class \nodoc\ _TestDecodeCompactArray is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[U32](v, MessagePackDecoder.array(b)?,
+    h.assert_eq[U32](
+      v,
+      MessagePackDecoder.array(b)?,
       "roundtrip " + v.string())
 
 class \nodoc\ _TestDecodeCompactMap is UnitTest
@@ -1102,7 +1092,9 @@ class \nodoc\ _TestDecodeCompactMap is UnitTest
       b.append(bs)
     end
 
-    h.assert_eq[U32](v, MessagePackDecoder.map(b)?,
+    h.assert_eq[U32](
+      v,
+      MessagePackDecoder.map(b)?,
       "roundtrip " + v.string())
 
 class \nodoc\ _TestDecodeCompactExt is UnitTest
@@ -1128,9 +1120,8 @@ class \nodoc\ _TestDecodeCompactExt is UnitTest
     data_size: USize)
     ?
   =>
-    let value = recover val
-      Array[U8].init('X', data_size)
-    end
+    let value =
+      recover val Array[U8].init('X', data_size) end
     let w: Writer ref = Writer
     let b: Reader ref = Reader
 
@@ -1141,13 +1132,15 @@ class \nodoc\ _TestDecodeCompactExt is UnitTest
     end
 
     (let dt, let dv) = MessagePackDecoder.ext(b)?
-    h.assert_eq[U8](t, dt,
-      "type for size=" + data_size.string())
-    h.assert_eq[USize](data_size, dv.size(),
+    h.assert_eq[U8](
+      t, dt, "type for size=" + data_size.string())
+    h.assert_eq[USize](
+      data_size,
+      dv.size(),
       "data size for size=" + data_size.string())
     for i in Range(0, data_size) do
-      h.assert_eq[U8]('X', dv(i)?,
-        "data byte " + i.string())
+      h.assert_eq[U8](
+        'X', dv(i)?, "data byte " + i.string())
     end
 
 class \nodoc\ _TestDecodeCompactTimestamp is UnitTest
@@ -1182,12 +1175,16 @@ class \nodoc\ _TestDecodeCompactTimestamp is UnitTest
     end
 
     (let ds, let dn) = MessagePackDecoder.timestamp(b)?
-    h.assert_eq[I64](sec, ds,
-      "sec for (" + sec.string() + ", "
-        + nsec.string() + ")")
-    h.assert_eq[U32](nsec, dn,
-      "nsec for (" + sec.string() + ", "
-        + nsec.string() + ")")
+    h.assert_eq[I64](
+      sec,
+      ds,
+      "sec for (" + sec.string() + ", " +
+        nsec.string() + ")")
+    h.assert_eq[U32](
+      nsec,
+      dn,
+      "nsec for (" + sec.string() + ", " +
+        nsec.string() + ")")
 
 class \nodoc\ _TestDecodeCompactUintRejects is UnitTest
   """
@@ -1215,8 +1212,8 @@ class \nodoc\ _TestDecodeCompactUintRejects is UnitTest
       recover val [as U8: format_byte] end)
     try
       MessagePackDecoder.uint(b)?
-      h.fail("uint accepted 0x"
-        + format_byte.string())
+      h.fail("uint accepted 0x" +
+        format_byte.string())
     end
 
 class \nodoc\ _TestDecodeCompactIntRejects is UnitTest
@@ -1243,8 +1240,7 @@ class \nodoc\ _TestDecodeCompactIntRejects is UnitTest
       recover val [as U8: format_byte] end)
     try
       MessagePackDecoder.int(b)?
-      h.fail("int accepted 0x"
-        + format_byte.string())
+      h.fail("int accepted 0x" + format_byte.string())
     end
 
 class \nodoc\ _TestDecodeCompactArrayRejects is UnitTest
@@ -1269,8 +1265,8 @@ class \nodoc\ _TestDecodeCompactArrayRejects is UnitTest
       recover val [as U8: format_byte] end)
     try
       MessagePackDecoder.array(b)?
-      h.fail("array accepted 0x"
-        + format_byte.string())
+      h.fail(
+        "array accepted 0x" + format_byte.string())
     end
 
 class \nodoc\ _TestDecodeCompactMapRejects is UnitTest
@@ -1294,8 +1290,8 @@ class \nodoc\ _TestDecodeCompactMapRejects is UnitTest
       recover val [as U8: format_byte] end)
     try
       MessagePackDecoder.map(b)?
-      h.fail("map accepted 0x"
-        + format_byte.string())
+      h.fail(
+        "map accepted 0x" + format_byte.string())
     end
 
 class \nodoc\ _PropertyCompactUintRoundtrip
@@ -1308,18 +1304,18 @@ class \nodoc\ _PropertyCompactUintRoundtrip
     "msgpack/PropertyCompactUintRoundtrip"
 
   fun gen(): Generator[U64] =>
-    Generators.frequency[U64]([
-      as WeightedGenerator[U64]:
-      (2, Generators.u8().map[U64]({(v) =>
-        (v and 0x7F).u64()}))              // fixint
-      (2, Generators.u8().map[U64]({(v) =>
-        (v or 0x80).u64()}))               // uint_8
-      (2, Generators.u16().map[U64]({(v) =>
-        v.u64() + 256}))                   // uint_16
-      (2, Generators.u32().map[U64]({(v) =>
-        v.u64() + 65536}))                 // uint_32
-      (2, Generators.u64())                // uint_64
-    ])
+    Generators.frequency[U64](
+      [ as WeightedGenerator[U64]:
+        (2, Generators.u8().map[U64]({(v) =>
+          (v and 0x7F).u64()}))            // fixint
+        (2, Generators.u8().map[U64]({(v) =>
+          (v or 0x80).u64()}))             // uint_8
+        (2, Generators.u16().map[U64]({(v) =>
+          v.u64() + 256}))                 // uint_16
+        (2, Generators.u32().map[U64]({(v) =>
+          v.u64() + 65536}))               // uint_32
+        (2, Generators.u64())              // uint_64
+      ])
 
   fun ref property(arg1: U64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -1331,7 +1327,8 @@ class \nodoc\ _PropertyCompactUintRoundtrip
       b.append(bs)
     end
 
-    h.assert_eq[U64](arg1, MessagePackDecoder.uint(b)?)
+    h.assert_eq[U64](
+      arg1, MessagePackDecoder.uint(b)?)
 
 class \nodoc\ _PropertyCompactIntRoundtrip
   is Property1[I64]
@@ -1343,26 +1340,26 @@ class \nodoc\ _PropertyCompactIntRoundtrip
     "msgpack/PropertyCompactIntRoundtrip"
 
   fun gen(): Generator[I64] =>
-    Generators.frequency[I64]([
-      as WeightedGenerator[I64]:
-      (2, Generators.u8().map[I64]({(v) =>
-        (v and 0x7F).i64()}))              // pos fixint
-      (2, Generators.u8().map[I64]({(v) =>
-        -((v % 32).i64() + 1)}))           // neg fixint
-      (1, Generators.u8().map[I64]({(v) =>
-        (v or 0x80).i64()}))               // uint_8
-      (1, Generators.u8().map[I64]({(v) =>
-        -((v % 96).i64() + 33)}))          // int_8
-      (1, Generators.u16().map[I64]({(v) =>
-        v.i64() + 256}))                   // uint_16
-      (1, Generators.u16().map[I64]({(v) =>
-        -(v.i64() + 129)}))                // int_16
-      (1, Generators.u32().map[I64]({(v) =>
-        v.i64() + 65536}))                 // uint_32
-      (1, Generators.u32().map[I64]({(v) =>
-        -(v.i64() + 32769)}))              // int_32
-      (1, Generators.i64())                // int_64/uint_64
-    ])
+    Generators.frequency[I64](
+      [ as WeightedGenerator[I64]:
+        (2, Generators.u8().map[I64]({(v) =>
+          (v and 0x7F).i64()}))            // pos fixint
+        (2, Generators.u8().map[I64]({(v) =>
+          -((v % 32).i64() + 1)}))         // neg fixint
+        (1, Generators.u8().map[I64]({(v) =>
+          (v or 0x80).i64()}))             // uint_8
+        (1, Generators.u8().map[I64]({(v) =>
+          -((v % 96).i64() + 33)}))        // int_8
+        (1, Generators.u16().map[I64]({(v) =>
+          v.i64() + 256}))                 // uint_16
+        (1, Generators.u16().map[I64]({(v) =>
+          -(v.i64() + 129)}))              // int_16
+        (1, Generators.u32().map[I64]({(v) =>
+          v.i64() + 65536}))               // uint_32
+        (1, Generators.u32().map[I64]({(v) =>
+          -(v.i64() + 32769)}))            // int_32
+        (1, Generators.i64())              // int_64/uint_64
+      ])
 
   fun ref property(arg1: I64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -1374,7 +1371,8 @@ class \nodoc\ _PropertyCompactIntRoundtrip
       b.append(bs)
     end
 
-    h.assert_eq[I64](arg1, MessagePackDecoder.int(b)?)
+    h.assert_eq[I64](
+      arg1, MessagePackDecoder.int(b)?)
 
 class \nodoc\ _PropertyCompactStrRoundtrip
   is Property1[String]
@@ -1387,16 +1385,16 @@ class \nodoc\ _PropertyCompactStrRoundtrip
     "msgpack/PropertyCompactStrRoundtrip"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()
@@ -1409,7 +1407,8 @@ class \nodoc\ _PropertyCompactStrRoundtrip
       b.append(bs)
     end
 
-    h.assert_eq[String](s, MessagePackDecoder.str(b)?)
+    h.assert_eq[String](
+      s, MessagePackDecoder.str(b)?)
 
 class \nodoc\ _PropertyCompactArrayRoundtrip
   is Property1[U32]
@@ -1421,16 +1420,16 @@ class \nodoc\ _PropertyCompactArrayRoundtrip
     "msgpack/PropertyCompactArrayRoundtrip"
 
   fun gen(): Generator[U32] =>
-    Generators.frequency[U32]([
-      as WeightedGenerator[U32]:
-      (3, Generators.u8().map[U32]({(v) =>
-        (v and 0x0F).u32()}))              // fixarray
-      (3, Generators.u16().map[U32]({(v) =>
-        v.u32() + 16}))                    // array_16
-      (4, Generators.u32().map[U32]({(v) =>
-        if v < 65536 then v + 65536
-        else v end}))                      // array_32
-    ])
+    Generators.frequency[U32](
+      [ as WeightedGenerator[U32]:
+        (3, Generators.u8().map[U32]({(v) =>
+          (v and 0x0F).u32()}))            // fixarray
+        (3, Generators.u16().map[U32]({(v) =>
+          v.u32() + 16}))                  // array_16
+        (4, Generators.u32().map[U32]({(v) =>
+          if v < 65536 then v + 65536
+          else v end}))                    // array_32
+      ])
 
   fun ref property(arg1: U32, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -1442,7 +1441,8 @@ class \nodoc\ _PropertyCompactArrayRoundtrip
       b.append(bs)
     end
 
-    h.assert_eq[U32](arg1, MessagePackDecoder.array(b)?)
+    h.assert_eq[U32](
+      arg1, MessagePackDecoder.array(b)?)
 
 class \nodoc\ _PropertyCompactMapRoundtrip
   is Property1[U32]
@@ -1454,16 +1454,16 @@ class \nodoc\ _PropertyCompactMapRoundtrip
     "msgpack/PropertyCompactMapRoundtrip"
 
   fun gen(): Generator[U32] =>
-    Generators.frequency[U32]([
-      as WeightedGenerator[U32]:
-      (3, Generators.u8().map[U32]({(v) =>
-        (v and 0x0F).u32()}))              // fixmap
-      (3, Generators.u16().map[U32]({(v) =>
-        v.u32() + 16}))                    // map_16
-      (4, Generators.u32().map[U32]({(v) =>
-        if v < 65536 then v + 65536
-        else v end}))                      // map_32
-    ])
+    Generators.frequency[U32](
+      [ as WeightedGenerator[U32]:
+        (3, Generators.u8().map[U32]({(v) =>
+          (v and 0x0F).u32()}))            // fixmap
+        (3, Generators.u16().map[U32]({(v) =>
+          v.u32() + 16}))                  // map_16
+        (4, Generators.u32().map[U32]({(v) =>
+          if v < 65536 then v + 65536
+          else v end}))                    // map_32
+      ])
 
   fun ref property(arg1: U32, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -1475,7 +1475,8 @@ class \nodoc\ _PropertyCompactMapRoundtrip
       b.append(bs)
     end
 
-    h.assert_eq[U32](arg1, MessagePackDecoder.map(b)?)
+    h.assert_eq[U32](
+      arg1, MessagePackDecoder.map(b)?)
 
 class \nodoc\ _PropertyCompactUintSmallestSize
   is Property1[U64]
@@ -1489,18 +1490,18 @@ class \nodoc\ _PropertyCompactUintSmallestSize
     "msgpack/PropertyCompactUintSmallestSize"
 
   fun gen(): Generator[U64] =>
-    Generators.frequency[U64]([
-      as WeightedGenerator[U64]:
-      (2, Generators.u8().map[U64]({(v) =>
-        (v and 0x7F).u64()}))              // fixint
-      (2, Generators.u8().map[U64]({(v) =>
-        (v or 0x80).u64()}))               // uint_8
-      (2, Generators.u16().map[U64]({(v) =>
-        v.u64() + 256}))                   // uint_16
-      (2, Generators.u32().map[U64]({(v) =>
-        v.u64() + 65536}))                 // uint_32
-      (2, Generators.u64())                // uint_64
-    ])
+    Generators.frequency[U64](
+      [ as WeightedGenerator[U64]:
+        (2, Generators.u8().map[U64]({(v) =>
+          (v and 0x7F).u64()}))            // fixint
+        (2, Generators.u8().map[U64]({(v) =>
+          (v or 0x80).u64()}))             // uint_8
+        (2, Generators.u16().map[U64]({(v) =>
+          v.u64() + 256}))                 // uint_16
+        (2, Generators.u32().map[U64]({(v) =>
+          v.u64() + 65536}))               // uint_32
+        (2, Generators.u64())              // uint_64
+      ])
 
   fun ref property(arg1: U64, h: PropertyHelper) ? =>
     let wc: Writer ref = Writer
@@ -1510,40 +1511,45 @@ class \nodoc\ _PropertyCompactUintSmallestSize
     // uint_64 is always applicable
     let w64: Writer ref = Writer
     MessagePackEncoder.uint_64(w64, arg1)
-    h.assert_true(compact <= _writer_size(w64),
+    h.assert_true(
+      compact <= _writer_size(w64),
       "compact <= uint_64 for " + arg1.string())
 
     if arg1 <= U32.max_value().u64() then
       let w32: Writer ref = Writer
       MessagePackEncoder.uint_32(w32, arg1.u32())
-      h.assert_true(compact <= _writer_size(w32),
-        "compact <= uint_32 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w32),
+        "compact <= uint_32 for " +
+          arg1.string())
     end
 
     if arg1 <= U16.max_value().u64() then
       let w16: Writer ref = Writer
       MessagePackEncoder.uint_16(w16, arg1.u16())
-      h.assert_true(compact <= _writer_size(w16),
-        "compact <= uint_16 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w16),
+        "compact <= uint_16 for " +
+          arg1.string())
     end
 
     if arg1 <= U8.max_value().u64() then
       let w8: Writer ref = Writer
       MessagePackEncoder.uint_8(w8, arg1.u8())
-      h.assert_true(compact <= _writer_size(w8),
-        "compact <= uint_8 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w8),
+        "compact <= uint_8 for " +
+          arg1.string())
     end
 
     if arg1 <= _Limit.positive_fixint().u64() then
       let wf: Writer ref = Writer
-      MessagePackEncoder.positive_fixint(wf,
-        arg1.u8())?
-      h.assert_true(compact <= _writer_size(wf),
-        "compact <= fixint for "
-          + arg1.string())
+      MessagePackEncoder.positive_fixint(
+        wf, arg1.u8())?
+      h.assert_true(
+        compact <= _writer_size(wf),
+        "compact <= fixint for " +
+          arg1.string())
     end
 
   fun _writer_size(w: Writer ref): USize =>
@@ -1564,26 +1570,26 @@ class \nodoc\ _PropertyCompactIntSmallestSize
     "msgpack/PropertyCompactIntSmallestSize"
 
   fun gen(): Generator[I64] =>
-    Generators.frequency[I64]([
-      as WeightedGenerator[I64]:
-      (2, Generators.u8().map[I64]({(v) =>
-        (v and 0x7F).i64()}))              // pos fixint
-      (2, Generators.u8().map[I64]({(v) =>
-        -((v % 32).i64() + 1)}))           // neg fixint
-      (1, Generators.u8().map[I64]({(v) =>
-        (v or 0x80).i64()}))               // uint_8
-      (1, Generators.u8().map[I64]({(v) =>
-        -((v % 96).i64() + 33)}))          // int_8
-      (1, Generators.u16().map[I64]({(v) =>
-        v.i64() + 256}))                   // uint_16
-      (1, Generators.u16().map[I64]({(v) =>
-        -(v.i64() + 129)}))                // int_16
-      (1, Generators.u32().map[I64]({(v) =>
-        v.i64() + 65536}))                 // uint_32
-      (1, Generators.u32().map[I64]({(v) =>
-        -(v.i64() + 32769)}))              // int_32
-      (1, Generators.i64())                // int_64/uint_64
-    ])
+    Generators.frequency[I64](
+      [ as WeightedGenerator[I64]:
+        (2, Generators.u8().map[I64]({(v) =>
+          (v and 0x7F).i64()}))            // pos fixint
+        (2, Generators.u8().map[I64]({(v) =>
+          -((v % 32).i64() + 1)}))         // neg fixint
+        (1, Generators.u8().map[I64]({(v) =>
+          (v or 0x80).i64()}))             // uint_8
+        (1, Generators.u8().map[I64]({(v) =>
+          -((v % 96).i64() + 33)}))        // int_8
+        (1, Generators.u16().map[I64]({(v) =>
+          v.i64() + 256}))                 // uint_16
+        (1, Generators.u16().map[I64]({(v) =>
+          -(v.i64() + 129)}))              // int_16
+        (1, Generators.u32().map[I64]({(v) =>
+          v.i64() + 65536}))               // uint_32
+        (1, Generators.u32().map[I64]({(v) =>
+          -(v.i64() + 32769)}))            // int_32
+        (1, Generators.i64())              // int_64/uint_64
+      ])
 
   fun ref property(arg1: I64, h: PropertyHelper) =>
     let wc: Writer ref = Writer
@@ -1593,37 +1599,41 @@ class \nodoc\ _PropertyCompactIntSmallestSize
     // int_64 is always applicable
     let w64: Writer ref = Writer
     MessagePackEncoder.int_64(w64, arg1)
-    h.assert_true(compact <= _writer_size(w64),
+    h.assert_true(
+      compact <= _writer_size(w64),
       "compact <= int_64 for " + arg1.string())
 
-    if (arg1 >= I32.min_value().i64())
-      and (arg1 <= I32.max_value().i64())
+    if (arg1 >= I32.min_value().i64()) and
+      (arg1 <= I32.max_value().i64())
     then
       let w32: Writer ref = Writer
       MessagePackEncoder.int_32(w32, arg1.i32())
-      h.assert_true(compact <= _writer_size(w32),
-        "compact <= int_32 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w32),
+        "compact <= int_32 for " +
+          arg1.string())
     end
 
-    if (arg1 >= I16.min_value().i64())
-      and (arg1 <= I16.max_value().i64())
+    if (arg1 >= I16.min_value().i64()) and
+      (arg1 <= I16.max_value().i64())
     then
       let w16: Writer ref = Writer
       MessagePackEncoder.int_16(w16, arg1.i16())
-      h.assert_true(compact <= _writer_size(w16),
-        "compact <= int_16 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w16),
+        "compact <= int_16 for " +
+          arg1.string())
     end
 
-    if (arg1 >= I8.min_value().i64())
-      and (arg1 <= I8.max_value().i64())
+    if (arg1 >= I8.min_value().i64()) and
+      (arg1 <= I8.max_value().i64())
     then
       let w8: Writer ref = Writer
       MessagePackEncoder.int_8(w8, arg1.i8())
-      h.assert_true(compact <= _writer_size(w8),
-        "compact <= int_8 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w8),
+        "compact <= int_8 for " +
+          arg1.string())
     end
 
     if arg1 >= 0 then
@@ -1632,33 +1642,33 @@ class \nodoc\ _PropertyCompactIntSmallestSize
         MessagePackEncoder.uint_8(wu8, arg1.u8())
         h.assert_true(
           compact <= _writer_size(wu8),
-          "compact <= uint_8 for "
-            + arg1.string())
+          "compact <= uint_8 for " +
+            arg1.string())
       end
       if arg1 <= U16.max_value().i64() then
         let wu16: Writer ref = Writer
-        MessagePackEncoder.uint_16(wu16,
-          arg1.u16())
+        MessagePackEncoder.uint_16(
+          wu16, arg1.u16())
         h.assert_true(
           compact <= _writer_size(wu16),
-          "compact <= uint_16 for "
-            + arg1.string())
+          "compact <= uint_16 for " +
+            arg1.string())
       end
       if arg1 <= U32.max_value().i64() then
         let wu32: Writer ref = Writer
-        MessagePackEncoder.uint_32(wu32,
-          arg1.u32())
+        MessagePackEncoder.uint_32(
+          wu32, arg1.u32())
         h.assert_true(
           compact <= _writer_size(wu32),
-          "compact <= uint_32 for "
-            + arg1.string())
+          "compact <= uint_32 for " +
+            arg1.string())
       end
       let wu64: Writer ref = Writer
       MessagePackEncoder.uint_64(wu64, arg1.u64())
       h.assert_true(
         compact <= _writer_size(wu64),
-        "compact <= uint_64 for "
-          + arg1.string())
+        "compact <= uint_64 for " +
+          arg1.string())
     end
 
   fun _writer_size(w: Writer ref): USize =>
@@ -1679,16 +1689,16 @@ class \nodoc\ _PropertyCompactStrSmallestSize
     "msgpack/PropertyCompactStrSmallestSize"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper)
     ?
@@ -1701,32 +1711,36 @@ class \nodoc\ _PropertyCompactStrSmallestSize
     // str_32 is always applicable for test sizes
     let w32: Writer ref = Writer
     MessagePackEncoder.str_32(w32, s)?
-    h.assert_true(compact <= _writer_size(w32),
-      "compact <= str_32 for len="
-        + s.size().string())
+    h.assert_true(
+      compact <= _writer_size(w32),
+      "compact <= str_32 for len=" +
+        s.size().string())
 
     if s.size() <= U16.max_value().usize() then
       let w16: Writer ref = Writer
       MessagePackEncoder.str_16(w16, s)?
-      h.assert_true(compact <= _writer_size(w16),
-        "compact <= str_16 for len="
-          + s.size().string())
+      h.assert_true(
+        compact <= _writer_size(w16),
+        "compact <= str_16 for len=" +
+          s.size().string())
     end
 
     if s.size() <= U8.max_value().usize() then
       let w8: Writer ref = Writer
       MessagePackEncoder.str_8(w8, s)?
-      h.assert_true(compact <= _writer_size(w8),
-        "compact <= str_8 for len="
-          + s.size().string())
+      h.assert_true(
+        compact <= _writer_size(w8),
+        "compact <= str_8 for len=" +
+          s.size().string())
     end
 
     if s.size() <= _Limit.fixstr() then
       let wf: Writer ref = Writer
       MessagePackEncoder.fixstr(wf, s)?
-      h.assert_true(compact <= _writer_size(wf),
-        "compact <= fixstr for len="
-          + s.size().string())
+      h.assert_true(
+        compact <= _writer_size(wf),
+        "compact <= fixstr for len=" +
+          s.size().string())
     end
 
   fun _writer_size(w: Writer ref): USize =>
@@ -1747,16 +1761,16 @@ class \nodoc\ _PropertyCompactArraySmallestSize
     "msgpack/PropertyCompactArraySmallestSize"
 
   fun gen(): Generator[U32] =>
-    Generators.frequency[U32]([
-      as WeightedGenerator[U32]:
-      (3, Generators.u8().map[U32]({(v) =>
-        (v and 0x0F).u32()}))              // fixarray
-      (3, Generators.u16().map[U32]({(v) =>
-        v.u32() + 16}))                    // array_16
-      (4, Generators.u32().map[U32]({(v) =>
-        if v < 65536 then v + 65536
-        else v end}))                      // array_32
-    ])
+    Generators.frequency[U32](
+      [ as WeightedGenerator[U32]:
+        (3, Generators.u8().map[U32]({(v) =>
+          (v and 0x0F).u32()}))            // fixarray
+        (3, Generators.u16().map[U32]({(v) =>
+          v.u32() + 16}))                  // array_16
+        (4, Generators.u32().map[U32]({(v) =>
+          if v < 65536 then v + 65536
+          else v end}))                    // array_32
+      ])
 
   fun ref property(arg1: U32, h: PropertyHelper) ? =>
     let wc: Writer ref = Writer
@@ -1766,24 +1780,27 @@ class \nodoc\ _PropertyCompactArraySmallestSize
     // array_32 is always applicable
     let w32: Writer ref = Writer
     MessagePackEncoder.array_32(w32, arg1)
-    h.assert_true(compact <= _writer_size(w32),
-      "compact <= array_32 for "
-        + arg1.string())
+    h.assert_true(
+      compact <= _writer_size(w32),
+      "compact <= array_32 for " +
+        arg1.string())
 
     if arg1 <= U16.max_value().u32() then
       let w16: Writer ref = Writer
       MessagePackEncoder.array_16(w16, arg1.u16())
-      h.assert_true(compact <= _writer_size(w16),
-        "compact <= array_16 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w16),
+        "compact <= array_16 for " +
+          arg1.string())
     end
 
     if arg1 <= _Limit.fixarray().u32() then
       let wf: Writer ref = Writer
       MessagePackEncoder.fixarray(wf, arg1.u8())?
-      h.assert_true(compact <= _writer_size(wf),
-        "compact <= fixarray for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(wf),
+        "compact <= fixarray for " +
+          arg1.string())
     end
 
   fun _writer_size(w: Writer ref): USize =>
@@ -1804,16 +1821,16 @@ class \nodoc\ _PropertyCompactMapSmallestSize
     "msgpack/PropertyCompactMapSmallestSize"
 
   fun gen(): Generator[U32] =>
-    Generators.frequency[U32]([
-      as WeightedGenerator[U32]:
-      (3, Generators.u8().map[U32]({(v) =>
-        (v and 0x0F).u32()}))              // fixmap
-      (3, Generators.u16().map[U32]({(v) =>
-        v.u32() + 16}))                    // map_16
-      (4, Generators.u32().map[U32]({(v) =>
-        if v < 65536 then v + 65536
-        else v end}))                      // map_32
-    ])
+    Generators.frequency[U32](
+      [ as WeightedGenerator[U32]:
+        (3, Generators.u8().map[U32]({(v) =>
+          (v and 0x0F).u32()}))            // fixmap
+        (3, Generators.u16().map[U32]({(v) =>
+          v.u32() + 16}))                  // map_16
+        (4, Generators.u32().map[U32]({(v) =>
+          if v < 65536 then v + 65536
+          else v end}))                    // map_32
+      ])
 
   fun ref property(arg1: U32, h: PropertyHelper) ? =>
     let wc: Writer ref = Writer
@@ -1823,24 +1840,27 @@ class \nodoc\ _PropertyCompactMapSmallestSize
     // map_32 is always applicable
     let w32: Writer ref = Writer
     MessagePackEncoder.map_32(w32, arg1)
-    h.assert_true(compact <= _writer_size(w32),
-      "compact <= map_32 for "
-        + arg1.string())
+    h.assert_true(
+      compact <= _writer_size(w32),
+      "compact <= map_32 for " +
+        arg1.string())
 
     if arg1 <= U16.max_value().u32() then
       let w16: Writer ref = Writer
       MessagePackEncoder.map_16(w16, arg1.u16())
-      h.assert_true(compact <= _writer_size(w16),
-        "compact <= map_16 for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(w16),
+        "compact <= map_16 for " +
+          arg1.string())
     end
 
     if arg1 <= _Limit.fixmap().u32() then
       let wf: Writer ref = Writer
       MessagePackEncoder.fixmap(wf, arg1.u8())?
-      h.assert_true(compact <= _writer_size(wf),
-        "compact <= fixmap for "
-          + arg1.string())
+      h.assert_true(
+        compact <= _writer_size(wf),
+        "compact <= fixmap for " +
+          arg1.string())
     end
 
   fun _writer_size(w: Writer ref): USize =>
@@ -1886,12 +1906,12 @@ class \nodoc\ _PropertyStr16Roundtrip
     "msgpack/PropertyStr16Roundtrip"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (7, Generators.ascii_printable(0, 300))
-      (3, Generators.ascii_printable(
-        301, U16.max_value().usize()))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (7, Generators.ascii_printable(0, 300))
+        (3, Generators.ascii_printable(
+          301, U16.max_value().usize()))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()
@@ -2225,11 +2245,11 @@ class \nodoc\ _PropertyExt16Roundtrip
     Generators.map2[U8, USize,
       (U8, Array[U8] val)](
       Generators.u8().filter({(v) => (v, v != 0xFF) }),
-      Generators.frequency[USize]([
-        as WeightedGenerator[USize]:
-        (7, Generators.usize(0, 300))
-        (3, Generators.usize(301, 1000))
-      ]),
+      Generators.frequency[USize](
+        [ as WeightedGenerator[USize]:
+          (7, Generators.usize(0, 300))
+          (3, Generators.usize(301, 1000))
+        ]),
       {(ext_type, len) =>
         (ext_type,
           recover val
@@ -2265,15 +2285,21 @@ class \nodoc\ _TestDecodeStrRejects is UnitTest
 
   fun ref apply(h: TestHelper) =>
     // str_8 rejects str_16 data
-    _rejects[String](h, _FormatName.str_16(),
+    _rejects[String](
+      h,
+      _FormatName.str_16(),
       {(b) ? => MessagePackDecoder.str_8(b)? },
       "str_8 accepted str_16")
     // str_16 rejects str_8 data
-    _rejects[String](h, _FormatName.str_8(),
+    _rejects[String](
+      h,
+      _FormatName.str_8(),
       {(b) ? => MessagePackDecoder.str_16(b)? },
       "str_16 accepted str_8")
     // str_32 rejects str_8 data
-    _rejects[String](h, _FormatName.str_8(),
+    _rejects[String](
+      h,
+      _FormatName.str_8(),
       {(b) ? => MessagePackDecoder.str_32(b)? },
       "str_32 accepted str_8")
 
@@ -2300,17 +2326,20 @@ class \nodoc\ _TestDecodeBinRejects is UnitTest
 
   fun ref apply(h: TestHelper) =>
     // bin_8 rejects bin_16 data
-    _rejects[Array[U8] iso^](h,
+    _rejects[Array[U8] iso^](
+      h,
       _FormatName.bin_16(),
       {(b) ? => MessagePackDecoder.bin_8(b)? },
       "bin_8 accepted bin_16")
     // bin_16 rejects bin_8 data
-    _rejects[Array[U8] iso^](h,
+    _rejects[Array[U8] iso^](
+      h,
       _FormatName.bin_8(),
       {(b) ? => MessagePackDecoder.bin_16(b)? },
       "bin_16 accepted bin_8")
     // bin_32 rejects bin_8 data
-    _rejects[Array[U8] iso^](h,
+    _rejects[Array[U8] iso^](
+      h,
       _FormatName.bin_8(),
       {(b) ? => MessagePackDecoder.bin_32(b)? },
       "bin_32 accepted bin_8")
@@ -2338,29 +2367,34 @@ class \nodoc\ _TestDecodeFixextRejects is UnitTest
 
   fun ref apply(h: TestHelper) =>
     // fixext_1 rejects fixext_2
-    _rejects(h, _FormatName.fixext_2(),
-      {(b) ? =>
-        MessagePackDecoder.fixext_1(b)? },
+    _rejects(
+      h,
+      _FormatName.fixext_2(),
+      {(b) ? => MessagePackDecoder.fixext_1(b)? },
       "fixext_1 accepted fixext_2")
     // fixext_2 rejects fixext_1
-    _rejects(h, _FormatName.fixext_1(),
-      {(b) ? =>
-        MessagePackDecoder.fixext_2(b)? },
+    _rejects(
+      h,
+      _FormatName.fixext_1(),
+      {(b) ? => MessagePackDecoder.fixext_2(b)? },
       "fixext_2 accepted fixext_1")
     // fixext_4 rejects fixext_8
-    _rejects(h, _FormatName.fixext_8(),
-      {(b) ? =>
-        MessagePackDecoder.fixext_4(b)? },
+    _rejects(
+      h,
+      _FormatName.fixext_8(),
+      {(b) ? => MessagePackDecoder.fixext_4(b)? },
       "fixext_4 accepted fixext_8")
     // fixext_8 rejects fixext_16
-    _rejects(h, _FormatName.fixext_16(),
-      {(b) ? =>
-        MessagePackDecoder.fixext_8(b)? },
+    _rejects(
+      h,
+      _FormatName.fixext_16(),
+      {(b) ? => MessagePackDecoder.fixext_8(b)? },
       "fixext_8 accepted fixext_16")
     // fixext_16 rejects fixext_1
-    _rejects(h, _FormatName.fixext_1(),
-      {(b) ? =>
-        MessagePackDecoder.fixext_16(b)? },
+    _rejects(
+      h,
+      _FormatName.fixext_1(),
+      {(b) ? => MessagePackDecoder.fixext_16(b)? },
       "fixext_16 accepted fixext_1")
 
   fun _rejects(
@@ -2386,19 +2420,22 @@ class \nodoc\ _TestDecodeExtRejects is UnitTest
 
   fun ref apply(h: TestHelper) =>
     // ext_8 rejects ext_16
-    _rejects(h, _FormatName.ext_16(),
-      {(b) ? =>
-        MessagePackDecoder.ext_8(b)? },
+    _rejects(
+      h,
+      _FormatName.ext_16(),
+      {(b) ? => MessagePackDecoder.ext_8(b)? },
       "ext_8 accepted ext_16")
     // ext_16 rejects ext_8
-    _rejects(h, _FormatName.ext_8(),
-      {(b) ? =>
-        MessagePackDecoder.ext_16(b)? },
+    _rejects(
+      h,
+      _FormatName.ext_8(),
+      {(b) ? => MessagePackDecoder.ext_16(b)? },
       "ext_16 accepted ext_8")
     // ext_32 rejects ext_8
-    _rejects(h, _FormatName.ext_8(),
-      {(b) ? =>
-        MessagePackDecoder.ext_32(b)? },
+    _rejects(
+      h,
+      _FormatName.ext_8(),
+      {(b) ? => MessagePackDecoder.ext_32(b)? },
       "ext_32 accepted ext_8")
 
   fun _rejects(
@@ -2418,7 +2455,6 @@ class \nodoc\ _TestDecodeExtRejects is UnitTest
 //
 // Skip tests
 //
-
 class \nodoc\ _TestSkipNil is UnitTest
   fun name(): String =>
     "msgpack/SkipNil"
@@ -2450,8 +2486,8 @@ class \nodoc\ _TestSkipBool is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip bool " + v.string())
+    h.assert_eq[USize](
+      0, b.size(), "skip bool " + v.string())
 
 class \nodoc\ _TestSkipFixint is UnitTest
   fun name(): String =>
@@ -2466,8 +2502,8 @@ class \nodoc\ _TestSkipFixint is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip positive fixint")
+    h.assert_eq[USize](
+      0, b.size(), "skip positive fixint")
 
     // negative fixint
     let w2: Writer ref = Writer
@@ -2477,8 +2513,8 @@ class \nodoc\ _TestSkipFixint is UnitTest
       b2.append(bs)
     end
     MessagePackDecoder.skip(b2)?
-    h.assert_eq[USize](0, b2.size(),
-      "skip negative fixint")
+    h.assert_eq[USize](
+      0, b2.size(), "skip negative fixint")
 
 class \nodoc\ _TestSkipUint is UnitTest
   fun name(): String =>
@@ -2488,8 +2524,8 @@ class \nodoc\ _TestSkipUint is UnitTest
     _check(h, 200, 2, "uint_8")?
     _check(h, 1000, 3, "uint_16")?
     _check(h, 100000, 5, "uint_32")?
-    _check(h, (U32.max_value().u64() + 1),
-      9, "uint_64")?
+    _check(
+      h, (U32.max_value().u64() + 1), 9, "uint_64")?
 
   fun _check(
     h: TestHelper,
@@ -2504,11 +2540,11 @@ class \nodoc\ _TestSkipUint is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[USize](expected_size, b.size(),
-      "size " + label)
+    h.assert_eq[USize](
+      expected_size, b.size(), "size " + label)
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip " + label)
+    h.assert_eq[USize](
+      0, b.size(), "skip " + label)
 
 class \nodoc\ _TestSkipInt is UnitTest
   fun name(): String =>
@@ -2518,8 +2554,8 @@ class \nodoc\ _TestSkipInt is UnitTest
     _check(h, -100, 2, "int_8")?
     _check(h, -1000, 3, "int_16")?
     _check(h, -100000, 5, "int_32")?
-    _check(h, I32.min_value().i64() - 1,
-      9, "int_64")?
+    _check(
+      h, I32.min_value().i64() - 1, 9, "int_64")?
 
   fun _check(
     h: TestHelper,
@@ -2534,11 +2570,11 @@ class \nodoc\ _TestSkipInt is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[USize](expected_size, b.size(),
-      "size " + label)
+    h.assert_eq[USize](
+      expected_size, b.size(), "size " + label)
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip " + label)
+    h.assert_eq[USize](
+      0, b.size(), "skip " + label)
 
 class \nodoc\ _TestSkipFloat is UnitTest
   fun name(): String =>
@@ -2586,8 +2622,9 @@ class \nodoc\ _TestSkipStr8 is UnitTest
     "msgpack/SkipStr8"
 
   fun ref apply(h: TestHelper) ? =>
-    let s = String.from_array(
-      recover val Array[U8].init('A', 40) end)
+    let s =
+      String.from_array(
+        recover val Array[U8].init('A', 40) end)
     let w: Writer ref = Writer
     let b: Reader ref = Reader
     MessagePackEncoder.str_8(w, s)?
@@ -2602,8 +2639,9 @@ class \nodoc\ _TestSkipStr16 is UnitTest
     "msgpack/SkipStr16"
 
   fun ref apply(h: TestHelper) ? =>
-    let s = String.from_array(
-      recover val Array[U8].init('A', 300) end)
+    let s =
+      String.from_array(
+        recover val Array[U8].init('A', 300) end)
     let w: Writer ref = Writer
     let b: Reader ref = Reader
     MessagePackEncoder.str_16(w, s)?
@@ -2618,11 +2656,12 @@ class \nodoc\ _TestSkipStr32 is UnitTest
     "msgpack/SkipStr32"
 
   fun ref apply(h: TestHelper) ? =>
-    let s = String.from_array(
-      recover val
-        Array[U8].init('A',
-          U16.max_value().usize() + 1)
-      end)
+    let s =
+      String.from_array(
+        recover val
+          Array[U8].init(
+            'A', U16.max_value().usize() + 1)
+        end)
     let w: Writer ref = Writer
     let b: Reader ref = Reader
     MessagePackEncoder.str_32(w, s)?
@@ -2671,8 +2710,8 @@ class \nodoc\ _TestSkipBin32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let data: Array[U8] val =
       recover val
-        Array[U8].init(0xFF,
-          U16.max_value().usize() + 1)
+        Array[U8].init(
+          0xFF, U16.max_value().usize() + 1)
       end
     let w: Writer ref = Writer
     let b: Reader ref = Reader
@@ -2712,8 +2751,8 @@ class \nodoc\ _TestSkipFixext is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip " + label)
+    h.assert_eq[USize](
+      0, b.size(), "skip " + label)
 
 class \nodoc\ _TestSkipExt8 is UnitTest
   fun name(): String =>
@@ -2754,8 +2793,8 @@ class \nodoc\ _TestSkipExt32 is UnitTest
   fun ref apply(h: TestHelper) ? =>
     let data: Array[U8] val =
       recover val
-        Array[U8].init('X',
-          U16.max_value().usize() + 1)
+        Array[U8].init(
+          'X', U16.max_value().usize() + 1)
       end
     let w: Writer ref = Writer
     let b: Reader ref = Reader
@@ -2786,9 +2825,11 @@ class \nodoc\ _TestSkipTimestamp is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip timestamp sec=" + sec.string()
-        + " nsec=" + nsec.string())
+    h.assert_eq[USize](
+      0,
+      b.size(),
+      "skip timestamp sec=" + sec.string() +
+        " nsec=" + nsec.string())
 
 class \nodoc\ _TestSkipFixarray is UnitTest
   fun name(): String =>
@@ -2935,8 +2976,8 @@ class \nodoc\ _TestSkipEmptyContainers is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[USize](0, b.size(),
-      "skip empty array")
+    h.assert_eq[USize](
+      0, b.size(), "skip empty array")
 
     // empty map
     let w2: Writer ref = Writer
@@ -2946,8 +2987,8 @@ class \nodoc\ _TestSkipEmptyContainers is UnitTest
       b2.append(bs)
     end
     MessagePackDecoder.skip(b2)?
-    h.assert_eq[USize](0, b2.size(),
-      "skip empty map")
+    h.assert_eq[USize](
+      0, b2.size(), "skip empty map")
 
 class \nodoc\ _TestSkipPositionPreserving is UnitTest
   fun name(): String =>
@@ -2963,7 +3004,9 @@ class \nodoc\ _TestSkipPositionPreserving is UnitTest
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[U64](42, MessagePackDecoder.uint(b)?,
+    h.assert_eq[U64](
+      42,
+      MessagePackDecoder.uint(b)?,
       "skip str then decode uint")
 
     // skip array with contents, decode str
@@ -2979,7 +3022,8 @@ class \nodoc\ _TestSkipPositionPreserving is UnitTest
     MessagePackDecoder.skip(b2)?
     let result = MessagePackDecoder.str(b2)?
     h.assert_eq[String val](
-      "after", consume result,
+      "after",
+      consume result,
       "skip array then decode str")
 
 class \nodoc\ _TestSkipInvalidFormatByte is UnitTest
@@ -3010,7 +3054,9 @@ class \nodoc\ _TestSkipTruncatedData is UnitTest
       MessagePackDecoder.skip(b)?
       h.fail("skip accepted truncated uint_32")
     end
-    h.assert_eq[USize](1, b.size(),
+    h.assert_eq[USize](
+      1,
+      b.size(),
       "truncated header: no bytes consumed")
 
     // truncated str_8 (header + length, no data)
@@ -3023,13 +3069,14 @@ class \nodoc\ _TestSkipTruncatedData is UnitTest
       MessagePackDecoder.skip(b2)?
       h.fail("skip accepted truncated str_8")
     end
-    h.assert_eq[USize](2, b2.size(),
+    h.assert_eq[USize](
+      2,
+      b2.size(),
       "truncated payload: no bytes consumed")
 
 //
 // Skip property tests
 //
-
 class \nodoc\ _PropertySkipUint
   is Property1[U64]
   """
@@ -3040,18 +3087,18 @@ class \nodoc\ _PropertySkipUint
     "msgpack/PropertySkipUint"
 
   fun gen(): Generator[U64] =>
-    Generators.frequency[U64]([
-      as WeightedGenerator[U64]:
-      (2, Generators.u8().map[U64]({(v) =>
-        (v and 0x7F).u64()}))
-      (2, Generators.u8().map[U64]({(v) =>
-        (v or 0x80).u64()}))
-      (2, Generators.u16().map[U64]({(v) =>
-        v.u64() + 256}))
-      (2, Generators.u32().map[U64]({(v) =>
-        v.u64() + 65536}))
-      (2, Generators.u64())
-    ])
+    Generators.frequency[U64](
+      [ as WeightedGenerator[U64]:
+        (2, Generators.u8().map[U64]({(v) =>
+          (v and 0x7F).u64()}))
+        (2, Generators.u8().map[U64]({(v) =>
+          (v or 0x80).u64()}))
+        (2, Generators.u16().map[U64]({(v) =>
+          v.u64() + 256}))
+        (2, Generators.u32().map[U64]({(v) =>
+          v.u64() + 65536}))
+        (2, Generators.u64())
+      ])
 
   fun ref property(arg1: U64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -3073,26 +3120,26 @@ class \nodoc\ _PropertySkipInt
     "msgpack/PropertySkipInt"
 
   fun gen(): Generator[I64] =>
-    Generators.frequency[I64]([
-      as WeightedGenerator[I64]:
-      (2, Generators.u8().map[I64]({(v) =>
-        (v and 0x7F).i64()}))
-      (2, Generators.u8().map[I64]({(v) =>
-        -((v % 32).i64() + 1)}))
-      (1, Generators.u8().map[I64]({(v) =>
-        (v or 0x80).i64()}))
-      (1, Generators.u8().map[I64]({(v) =>
-        -((v % 96).i64() + 33)}))
-      (1, Generators.u16().map[I64]({(v) =>
-        v.i64() + 256}))
-      (1, Generators.u16().map[I64]({(v) =>
-        -(v.i64() + 129)}))
-      (1, Generators.u32().map[I64]({(v) =>
-        v.i64() + 65536}))
-      (1, Generators.u32().map[I64]({(v) =>
-        -(v.i64() + 32769)}))
-      (1, Generators.i64())
-    ])
+    Generators.frequency[I64](
+      [ as WeightedGenerator[I64]:
+        (2, Generators.u8().map[I64]({(v) =>
+          (v and 0x7F).i64()}))
+        (2, Generators.u8().map[I64]({(v) =>
+          -((v % 32).i64() + 1)}))
+        (1, Generators.u8().map[I64]({(v) =>
+          (v or 0x80).i64()}))
+        (1, Generators.u8().map[I64]({(v) =>
+          -((v % 96).i64() + 33)}))
+        (1, Generators.u16().map[I64]({(v) =>
+          v.i64() + 256}))
+        (1, Generators.u16().map[I64]({(v) =>
+          -(v.i64() + 129)}))
+        (1, Generators.u32().map[I64]({(v) =>
+          v.i64() + 65536}))
+        (1, Generators.u32().map[I64]({(v) =>
+          -(v.i64() + 32769)}))
+        (1, Generators.i64())
+      ])
 
   fun ref property(arg1: I64, h: PropertyHelper) ? =>
     let w: Writer ref = Writer
@@ -3114,16 +3161,16 @@ class \nodoc\ _PropertySkipStr
     "msgpack/PropertySkipStr"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()
@@ -3186,16 +3233,16 @@ class \nodoc\ _PropertySkipExt
       (U8, Array[U8] val)](
       Generators.u8().filter(
         {(v) => (v, v != 0xFF) }),
-      Generators.frequency[USize]([
-        as WeightedGenerator[USize]:
-        (2, Generators.usize(1, 1))
-        (2, Generators.usize(2, 2))
-        (2, Generators.usize(4, 4))
-        (2, Generators.usize(8, 8))
-        (2, Generators.usize(16, 16))
-        (3, Generators.usize(0,
-          U8.max_value().usize()))
-      ]),
+      Generators.frequency[USize](
+        [ as WeightedGenerator[USize]:
+          (2, Generators.usize(1, 1))
+          (2, Generators.usize(2, 2))
+          (2, Generators.usize(4, 4))
+          (2, Generators.usize(8, 8))
+          (2, Generators.usize(16, 16))
+          (3, Generators.usize(
+            0, U8.max_value().usize()))
+        ]),
       {(ext_type, len) =>
         (ext_type,
           recover val
@@ -3247,8 +3294,8 @@ class \nodoc\ _PropertySkipPositionPreserving
       b.append(bs)
     end
     MessagePackDecoder.skip(b)?
-    h.assert_eq[U64](second,
-      MessagePackDecoder.uint(b)?)
+    h.assert_eq[U64](
+      second, MessagePackDecoder.uint(b)?)
 
 class \nodoc\ _TestValidateUTF8Valid is UnitTest
   fun name(): String =>
@@ -3312,8 +3359,8 @@ class \nodoc\ _TestDecodeFixstrUtf8 is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[String]("hello",
-      MessagePackDecoder.fixstr_utf8(b)?)
+    h.assert_eq[String](
+      "hello", MessagePackDecoder.fixstr_utf8(b)?)
 
 class \nodoc\ _TestDecodeFixstrUtf8Invalid is UnitTest
   fun name(): String =>
@@ -3343,8 +3390,8 @@ class \nodoc\ _TestDecodeStr8Utf8 is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[String]("str8",
-      MessagePackDecoder.str_8_utf8(b)?)
+    h.assert_eq[String](
+      "str8", MessagePackDecoder.str_8_utf8(b)?)
 
 class \nodoc\ _TestDecodeStr8Utf8Invalid is UnitTest
   fun name(): String =>
@@ -3374,8 +3421,8 @@ class \nodoc\ _TestDecodeStr16Utf8 is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[String]("str16",
-      MessagePackDecoder.str_16_utf8(b)?)
+    h.assert_eq[String](
+      "str16", MessagePackDecoder.str_16_utf8(b)?)
 
 class \nodoc\ _TestDecodeStr16Utf8Invalid is UnitTest
   fun name(): String =>
@@ -3405,8 +3452,8 @@ class \nodoc\ _TestDecodeStr32Utf8 is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[String]("str32",
-      MessagePackDecoder.str_32_utf8(b)?)
+    h.assert_eq[String](
+      "str32", MessagePackDecoder.str_32_utf8(b)?)
 
 class \nodoc\ _TestDecodeStr32Utf8Invalid is UnitTest
   fun name(): String =>
@@ -3436,8 +3483,8 @@ class \nodoc\ _TestDecodeCompactStrUtf8 is UnitTest
     for bs in w.done().values() do
       b.append(bs)
     end
-    h.assert_eq[String]("hello",
-      MessagePackDecoder.str_utf8(b)?)
+    h.assert_eq[String](
+      "hello", MessagePackDecoder.str_utf8(b)?)
 
 class \nodoc\ _TestDecodeCompactStrUtf8Invalid is UnitTest
   fun name(): String =>
@@ -3467,16 +3514,16 @@ class \nodoc\ _PropertyCompactStrUtf8Roundtrip
     "msgpack/PropertyCompactStrUtf8Roundtrip"
 
   fun gen(): Generator[String] =>
-    Generators.frequency[String]([
-      as WeightedGenerator[String]:
-      (5, Generators.ascii_printable(
-        0, _Limit.fixstr()))
-      (3, Generators.ascii_printable(
-        _Limit.fixstr() + 1,
-        U8.max_value().usize()))
-      (2, Generators.ascii_printable(
-        U8.max_value().usize() + 1, 300))
-    ])
+    Generators.frequency[String](
+      [ as WeightedGenerator[String]:
+        (5, Generators.ascii_printable(
+          0, _Limit.fixstr()))
+        (3, Generators.ascii_printable(
+          _Limit.fixstr() + 1,
+          U8.max_value().usize()))
+        (2, Generators.ascii_printable(
+          U8.max_value().usize() + 1, 300))
+      ])
 
   fun ref property(arg1: String, h: PropertyHelper) ? =>
     let s: String val = arg1.clone()

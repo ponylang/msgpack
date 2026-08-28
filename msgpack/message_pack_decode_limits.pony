@@ -1,21 +1,3 @@
-/*
-
-Copyright 2017 The Pony MessagePack Developers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 class val MessagePackDecodeLimits
   """
   Limits for the streaming decoder. Protects against
@@ -66,6 +48,9 @@ class val MessagePackDecodeLimits
     max_skip_values = max_skip_values'
 
   new val unlimited() =>
+    """
+    No size or depth limits. Suitable only for trusted input.
+    """
     max_str_len = USize.max_value()
     max_bin_len = USize.max_value()
     max_ext_len = USize.max_value()

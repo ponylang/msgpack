@@ -4,13 +4,6 @@ use "../../msgpack"
 use "buffered"
 
 actor Main
-  """
-  Demonstrates the streaming decoder with containers, mixed
-  types, and realistic chunking. Encodes a map
-  `{"name": "alice", "age": 30}`, splits the bytes into two
-  chunks, and feeds them incrementally. The decoder returns
-  `NotEnoughData` when a chunk boundary falls mid-value.
-  """
   new create(env: Env) =>
     try
       _streaming_decode(env)?
@@ -28,16 +21,17 @@ actor Main
     MessagePackEncoder.uint(w, 30)
 
     // Collect encoded bytes into a contiguous array
-    let encoded = recover val
-      let out = Array[U8]
-      for chunk in w.done().values() do
-        match chunk
-        | let a: Array[U8] val => out.append(a)
-        | let s: String val => out.append(s.array())
+    let encoded =
+      recover val
+        let out = Array[U8]
+        for chunk in w.done().values() do
+          match \exhaustive\ chunk
+          | let a: Array[U8] val => out.append(a)
+          | let s: String val => out.append(s.array())
+          end
         end
+        out
       end
-      out
-    end
 
     // Split at the midpoint to simulate chunked arrival
     let mid = encoded.size() / 2
@@ -47,14 +41,14 @@ actor Main
     let sd = MessagePackStreamingDecoder
 
     // Feed the first chunk and decode until we need more
-    env.out.print("--- feeding chunk 1 ("
-      + mid.string() + " bytes) ---")
+    env.out.print("--- feeding chunk 1 (" +
+      mid.string() + " bytes) ---")
     sd.append(chunk1)
     _decode_loop(sd, env)
 
     // Feed the second chunk and decode the rest
-    env.out.print("--- feeding chunk 2 ("
-      + (encoded.size() - mid).string() + " bytes) ---")
+    env.out.print("--- feeding chunk 2 (" +
+      (encoded.size() - mid).string() + " bytes) ---")
     sd.append(chunk2)
     _decode_loop(sd, env)
 
@@ -66,8 +60,8 @@ actor Main
     while not done do
       match sd.next()
       | let m: MessagePackMap =>
-        env.out.print("map header: "
-          + m.size.string() + " entries")
+        env.out.print("map header: " +
+          m.size.string() + " entries")
       | let s: String val =>
         env.out.print("string: " + s)
       | let v: U8 =>
