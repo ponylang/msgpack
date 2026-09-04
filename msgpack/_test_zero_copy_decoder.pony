@@ -896,7 +896,7 @@ class \nodoc\ _PropertyZCCompactStrRoundtrip
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 100)
+      where from = 0, to = 100)
 
   fun property(
     sample: String,
@@ -948,7 +948,7 @@ class \nodoc\ _PropertyZCStr8Roundtrip
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 255)
+      where from = 0, to = 255)
 
   fun property(
     sample: String,
@@ -968,7 +968,7 @@ class \nodoc\ _PropertyZCStr16Roundtrip
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 255)
+      where from = 0, to = 255)
 
   fun property(
     sample: String,
@@ -1279,7 +1279,7 @@ class \nodoc\ _PropertyZCCrossDecoderStr
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 100)
+      where from = 0, to = 100)
 
   fun property(
     sample: String,
@@ -1477,7 +1477,7 @@ class \nodoc\ _PropertyZCCompactStrUtf8Roundtrip
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 100)
+      where from = 0, to = 100)
 
   fun property(
     sample: String,
@@ -1497,7 +1497,7 @@ class \nodoc\ _PropertyZCCrossDecoderStrUtf8
 
   fun gen(): Generator[String] =>
     Generators.ascii(
-      where min = 0, max = 100)
+      where from = 0, to = 100)
 
   fun property(
     sample: String,
