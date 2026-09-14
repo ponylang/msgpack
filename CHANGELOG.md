@@ -12,6 +12,7 @@ All notable changes this project will be documented in this file. This project a
 
 ### Changed
 
+- Update to work with ponyc 0.73.0 ([PR #88](https://github.com/ponylang/msgpack/pull/88))
 
 ## [0.4.0] - 2026-09-04
 
