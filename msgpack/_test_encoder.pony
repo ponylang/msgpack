@@ -1,6 +1,5 @@
 use "buffered"
 use "collections"
-use "pony_check"
 use "pony_test"
 
 actor \nodoc\ _TestEncoder is TestList
@@ -104,8 +103,7 @@ actor \nodoc\ _TestEncoder is TestList
     test(_TestEncodeCompactStrUtf8)
     test(_TestEncodeCompactStrUtf8Invalid)
     test(_TestEncodeStrUtf8ByteArray)
-    test(Property1UnitTest[String](
-      _PropertyCompactStrUtf8EncoderRoundtrip))
+    test.property(_PropertyCompactStrUtf8EncoderRoundtrip)
 ifdef not "ci" then
     // These 2 tests take up a lot of memory.
     // CircleCI where CI is run only has 4 gigs of memory
@@ -2223,7 +2221,7 @@ class \nodoc\ _TestEncodeStrUtf8ByteArray is UnitTest
     end
 
 class \nodoc\ _PropertyCompactStrUtf8EncoderRoundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string, compact str_utf8 encode then str_utf8
   decode returns the original string.

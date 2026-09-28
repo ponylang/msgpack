@@ -1,5 +1,4 @@
 use "buffered"
-use "pony_check"
 use "pony_test"
 
 primitive _ZeroCopyBytes
@@ -84,53 +83,25 @@ actor \nodoc\ _TestZeroCopyDecoder is TestList
     test(_TestZCDecodeCompactExt)
     test(_TestZCDecodeCompactTimestamp)
     // Property-based roundtrip tests
-    test(Property1UnitTest[U64](
-      _PropertyZCCompactUintRoundtrip))
-    test(Property1UnitTest[I64](
-      _PropertyZCCompactIntRoundtrip))
-    test(Property1UnitTest[String](
-      _PropertyZCCompactStrRoundtrip))
-    test(Property1UnitTest[U32](
-      _PropertyZCCompactArrayRoundtrip))
-    test(Property1UnitTest[U32](
-      _PropertyZCCompactMapRoundtrip))
-    test(Property1UnitTest[String](
-      _PropertyZCStr8Roundtrip))
-    test(Property1UnitTest[String](
-      _PropertyZCStr16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCBin8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCBin16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCFixext1Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCFixext2Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCFixext4Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCFixext8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCFixext16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCExt8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCExt16Roundtrip))
+    test.property(_PropertyZCCompactUintRoundtrip)
+    test.property(_PropertyZCCompactIntRoundtrip)
+    test.property(_PropertyZCCompactStrRoundtrip)
+    test.property(_PropertyZCCompactArrayRoundtrip)
+    test.property(_PropertyZCCompactMapRoundtrip)
+    test.property(_PropertyZCStr8Roundtrip)
+    test.property(_PropertyZCStr16Roundtrip)
+    test.property(_PropertyZCBin8Roundtrip)
+    test.property(_PropertyZCBin16Roundtrip)
+    test.property(_PropertyZCFixext1Roundtrip)
+    test.property(_PropertyZCFixext2Roundtrip)
+    test.property(_PropertyZCFixext4Roundtrip)
+    test.property(_PropertyZCFixext8Roundtrip)
+    test.property(_PropertyZCFixext16Roundtrip)
+    test.property(_PropertyZCExt8Roundtrip)
+    test.property(_PropertyZCExt16Roundtrip)
     // Cross-decoder equivalence
-    test(Property1UnitTest[String](
-      _PropertyZCCrossDecoderStr))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyZCCrossDecoderBin))
+    test.property(_PropertyZCCrossDecoderStr)
+    test.property(_PropertyZCCrossDecoderBin)
     // UTF-8 validating variants
     test(_TestZCDecodeFixstrUtf8)
     test(_TestZCDecodeFixstrUtf8Invalid)
@@ -142,10 +113,8 @@ actor \nodoc\ _TestZeroCopyDecoder is TestList
     test(_TestZCDecodeStr32Utf8Invalid)
     test(_TestZCDecodeCompactStrUtf8)
     test(_TestZCDecodeCompactStrUtf8Invalid)
-    test(Property1UnitTest[String](
-      _PropertyZCCompactStrUtf8Roundtrip))
-    test(Property1UnitTest[String](
-      _PropertyZCCrossDecoderStrUtf8))
+    test.property(_PropertyZCCompactStrUtf8Roundtrip)
+    test.property(_PropertyZCCrossDecoderStrUtf8)
 
 //
 // ZeroCopyReader tests
@@ -858,7 +827,7 @@ class \nodoc\ _TestZCDecodeCompactTimestamp is UnitTest
 // Property-based roundtrip tests
 //
 class \nodoc\ _PropertyZCCompactUintRoundtrip
-  is Property1[U64]
+  is Property[U64]
   fun name(): String =>
     "msgpack/PropertyZCCompactUintRoundtrip"
 
@@ -874,7 +843,7 @@ class \nodoc\ _PropertyZCCompactUintRoundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCCompactIntRoundtrip
-  is Property1[I64]
+  is Property[I64]
   fun name(): String =>
     "msgpack/PropertyZCCompactIntRoundtrip"
 
@@ -890,7 +859,7 @@ class \nodoc\ _PropertyZCCompactIntRoundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCCompactStrRoundtrip
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCCompactStrRoundtrip"
 
@@ -910,7 +879,7 @@ class \nodoc\ _PropertyZCCompactStrRoundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCCompactArrayRoundtrip
-  is Property1[U32]
+  is Property[U32]
   fun name(): String =>
     "msgpack/PropertyZCCompactArrayRoundtrip"
 
@@ -926,7 +895,7 @@ class \nodoc\ _PropertyZCCompactArrayRoundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCCompactMapRoundtrip
-  is Property1[U32]
+  is Property[U32]
   fun name(): String =>
     "msgpack/PropertyZCCompactMapRoundtrip"
 
@@ -942,7 +911,7 @@ class \nodoc\ _PropertyZCCompactMapRoundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCStr8Roundtrip
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCStr8Roundtrip"
 
@@ -962,7 +931,7 @@ class \nodoc\ _PropertyZCStr8Roundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCStr16Roundtrip
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCStr16Roundtrip"
 
@@ -982,7 +951,7 @@ class \nodoc\ _PropertyZCStr16Roundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCBin8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCBin8Roundtrip"
 
@@ -1012,7 +981,7 @@ class \nodoc\ _PropertyZCBin8Roundtrip
     h.assert_eq[USize](value.size(), decoded.size())
 
 class \nodoc\ _PropertyZCBin16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCBin16Roundtrip"
 
@@ -1042,7 +1011,7 @@ class \nodoc\ _PropertyZCBin16Roundtrip
     h.assert_eq[USize](value.size(), decoded.size())
 
 class \nodoc\ _PropertyZCFixext1Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCFixext1Roundtrip"
 
@@ -1072,7 +1041,7 @@ class \nodoc\ _PropertyZCFixext1Roundtrip
     h.assert_eq[USize](1, d.size())
 
 class \nodoc\ _PropertyZCFixext2Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCFixext2Roundtrip"
 
@@ -1104,7 +1073,7 @@ class \nodoc\ _PropertyZCFixext2Roundtrip
     h.assert_eq[USize](2, d.size())
 
 class \nodoc\ _PropertyZCFixext4Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCFixext4Roundtrip"
 
@@ -1136,7 +1105,7 @@ class \nodoc\ _PropertyZCFixext4Roundtrip
     h.assert_eq[USize](4, d.size())
 
 class \nodoc\ _PropertyZCFixext8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCFixext8Roundtrip"
 
@@ -1168,7 +1137,7 @@ class \nodoc\ _PropertyZCFixext8Roundtrip
     h.assert_eq[USize](8, d.size())
 
 class \nodoc\ _PropertyZCFixext16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCFixext16Roundtrip"
 
@@ -1200,7 +1169,7 @@ class \nodoc\ _PropertyZCFixext16Roundtrip
     h.assert_eq[USize](16, d.size())
 
 class \nodoc\ _PropertyZCExt8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCExt8Roundtrip"
 
@@ -1233,7 +1202,7 @@ class \nodoc\ _PropertyZCExt8Roundtrip
     h.assert_eq[USize](value.size(), d.size())
 
 class \nodoc\ _PropertyZCExt16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCExt16Roundtrip"
 
@@ -1273,7 +1242,7 @@ class \nodoc\ _PropertyZCExt16Roundtrip
 // Cross-decoder equivalence
 //
 class \nodoc\ _PropertyZCCrossDecoderStr
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCCrossDecoderStr"
 
@@ -1303,7 +1272,7 @@ class \nodoc\ _PropertyZCCrossDecoderStr
     h.assert_eq[String](consume v1, v2)
 
 class \nodoc\ _PropertyZCCrossDecoderBin
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   fun name(): String =>
     "msgpack/PropertyZCCrossDecoderBin"
 
@@ -1471,7 +1440,7 @@ class \nodoc\ _TestZCDecodeCompactStrUtf8Invalid
     end
 
 class \nodoc\ _PropertyZCCompactStrUtf8Roundtrip
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCCompactStrUtf8Roundtrip"
 
@@ -1491,7 +1460,7 @@ class \nodoc\ _PropertyZCCompactStrUtf8Roundtrip
         _ZeroCopyBytes(w))?)
 
 class \nodoc\ _PropertyZCCrossDecoderStrUtf8
-  is Property1[String]
+  is Property[String]
   fun name(): String =>
     "msgpack/PropertyZCCrossDecoderStrUtf8"
 

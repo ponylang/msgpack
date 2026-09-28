@@ -1,5 +1,4 @@
 use "buffered"
-use "pony_check"
 use "pony_test"
 
 primitive _WriterBytes
@@ -77,20 +76,13 @@ actor \nodoc\ _TestStreamingDecoder is TestList
     test(_TestStreamPartialExt8)
     test(_TestStreamPartialThenMultiple)
     // Property-based tests
-    test(Property1UnitTest[U32](
-      _PropertyStreamU32Safety))
-    test(Property1UnitTest[I16](
-      _PropertyStreamI16Safety))
-    test(Property1UnitTest[String](
-      _PropertyStreamStr8Safety))
-    test(Property1UnitTest[U32](
-      _PropertyStreamTimestamp32Safety))
-    test(Property1UnitTest[U8](
-      _PropertyStreamBin16Safety))
-    test(Property1UnitTest[String](
-      _PropertyStreamStr32Safety))
-    test(Property1UnitTest[U8](
-      _PropertyStreamFixext4Safety))
+    test.property(_PropertyStreamU32Safety)
+    test.property(_PropertyStreamI16Safety)
+    test.property(_PropertyStreamStr8Safety)
+    test.property(_PropertyStreamTimestamp32Safety)
+    test.property(_PropertyStreamBin16Safety)
+    test.property(_PropertyStreamStr32Safety)
+    test.property(_PropertyStreamFixext4Safety)
     // Limit tests
     test(_TestStreamLimitFixext)
     test(_TestStreamLimitMap)
@@ -103,14 +95,10 @@ actor \nodoc\ _TestStreamingDecoder is TestList
     test(_TestStreamLimitUnlimited)
     test(_TestStreamLimitAtBoundary)
     // Limit property-based tests
-    test(Property1UnitTest[String](
-      _PropertyStreamLimitStr))
-    test(Property1UnitTest[U8](
-      _PropertyStreamLimitBin))
-    test(Property1UnitTest[U16](
-      _PropertyStreamLimitArray))
-    test(Property1UnitTest[U8](
-      _PropertyStreamLimitExt))
+    test.property(_PropertyStreamLimitStr)
+    test.property(_PropertyStreamLimitBin)
+    test.property(_PropertyStreamLimitArray)
+    test.property(_PropertyStreamLimitExt)
     // Depth limit tests
     test(_TestStreamDepthBasic)
     test(_TestStreamDepthExact)
@@ -123,8 +111,7 @@ actor \nodoc\ _TestStreamingDecoder is TestList
     test(_TestStreamDepthEmptyContainer)
     test(_TestStreamDepthDefault)
     // Depth property-based tests
-    test(Property1UnitTest[U8](
-      _PropertyStreamDepth))
+    test.property(_PropertyStreamDepth)
     // Skip tests
     test(_TestStreamSkipNil)
     test(_TestStreamSkipStr)
@@ -143,26 +130,19 @@ actor \nodoc\ _TestStreamingDecoder is TestList
     test(_TestStreamSkipPositionPreserving)
     test(_TestStreamSkipInsideContainer)
     // Skip property-based tests
-    test(Property1UnitTest[U32](
-      _PropertyStreamSkipU32Safety))
-    test(Property1UnitTest[I16](
-      _PropertyStreamSkipI16Safety))
-    test(Property1UnitTest[String](
-      _PropertyStreamSkipStr8Safety))
-    test(Property1UnitTest[U8](
-      _PropertyStreamSkipFixext4Safety))
-    test(Property1UnitTest[U8](
-      _PropertyStreamSkipBin16Safety))
-    test(Property1UnitTest[U16](
-      _PropertyStreamSkipLimitArray))
+    test.property(_PropertyStreamSkipU32Safety)
+    test.property(_PropertyStreamSkipI16Safety)
+    test.property(_PropertyStreamSkipStr8Safety)
+    test.property(_PropertyStreamSkipFixext4Safety)
+    test.property(_PropertyStreamSkipBin16Safety)
+    test.property(_PropertyStreamSkipLimitArray)
     // UTF-8 validation tests
     test(_TestStreamDecodeFixstrUtf8)
     test(_TestStreamDecodeFixstrUtf8Invalid)
     test(_TestStreamDecodeStr8Utf8)
     test(_TestStreamDecodeStr8Utf8Invalid)
     test(_TestStreamDecodeStrUtf8DefaultOff)
-    test(Property1UnitTest[String](
-      _PropertyStreamStrUtf8Roundtrip))
+    test.property(_PropertyStreamStrUtf8Roundtrip)
 
 //
 // Roundtrip tests
@@ -1198,7 +1178,7 @@ class \nodoc\ _TestStreamExt8NotTimestamp is UnitTest
 //
 // Property-based tests
 //
-class \nodoc\ _PropertyStreamU32Safety is Property1[U32]
+class \nodoc\ _PropertyStreamU32Safety is Property[U32]
   """
   For any U32, encoding as uint_32 and feeding to the streaming
   decoder byte-by-byte yields NotEnoughData for all partial
@@ -1243,7 +1223,7 @@ class \nodoc\ _PropertyStreamU32Safety is Property1[U32]
       h.fail("expected U32")
     end
 
-class \nodoc\ _PropertyStreamI16Safety is Property1[I16]
+class \nodoc\ _PropertyStreamI16Safety is Property[I16]
   """
   For any I16, encoding as int_16 and feeding to the streaming
   decoder byte-by-byte yields NotEnoughData for all partial
@@ -1288,7 +1268,7 @@ class \nodoc\ _PropertyStreamI16Safety is Property1[I16]
       h.fail("expected I16")
     end
 
-class \nodoc\ _PropertyStreamStr8Safety is Property1[String]
+class \nodoc\ _PropertyStreamStr8Safety is Property[String]
   """
   For any short ASCII string, encoding as str_8 and feeding to
   the streaming decoder byte-by-byte yields NotEnoughData for
@@ -1335,7 +1315,7 @@ class \nodoc\ _PropertyStreamStr8Safety is Property1[String]
     end
 
 class \nodoc\ _PropertyStreamTimestamp32Safety
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, encoding as timestamp_32 and feeding to the
   streaming decoder byte-by-byte yields NotEnoughData for all
@@ -1381,7 +1361,7 @@ class \nodoc\ _PropertyStreamTimestamp32Safety
       h.fail("expected MessagePackTimestamp")
     end
 
-class \nodoc\ _PropertyStreamBin16Safety is Property1[U8]
+class \nodoc\ _PropertyStreamBin16Safety is Property[U8]
   """
   For any small byte array, encoding as bin_16 and feeding to
   the streaming decoder byte-by-byte yields NotEnoughData for
@@ -1430,7 +1410,7 @@ class \nodoc\ _PropertyStreamBin16Safety is Property1[U8]
     end
 
 class \nodoc\ _PropertyStreamStr32Safety
-  is Property1[String]
+  is Property[String]
   """
   For any short ASCII string, encoding as str_32 and feeding to
   the streaming decoder byte-by-byte yields NotEnoughData for
@@ -1477,7 +1457,7 @@ class \nodoc\ _PropertyStreamStr32Safety
       h.fail("expected String")
     end
 
-class \nodoc\ _PropertyStreamFixext4Safety is Property1[U8]
+class \nodoc\ _PropertyStreamFixext4Safety is Property[U8]
   """
   For any ext_type byte, encoding a fixext_4 and feeding to the
   streaming decoder byte-by-byte yields NotEnoughData for all
@@ -1762,7 +1742,7 @@ class \nodoc\ _TestStreamLimitAtBoundary is UnitTest
 // Limit property-based tests
 //
 class \nodoc\ _PropertyStreamLimitStr
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string 0-100 chars with max_str_len=50:
   strings longer than 50 return LimitExceeded, others succeed.
@@ -1804,7 +1784,7 @@ class \nodoc\ _PropertyStreamLimitStr
     end
 
 class \nodoc\ _PropertyStreamLimitBin
-  is Property1[U8]
+  is Property[U8]
   """
   For any byte array of size 0-255 with max_bin_len=100:
   arrays larger than 100 return LimitExceeded, others succeed.
@@ -1847,7 +1827,7 @@ class \nodoc\ _PropertyStreamLimitBin
     end
 
 class \nodoc\ _PropertyStreamLimitArray
-  is Property1[U16]
+  is Property[U16]
   """
   For any U16 count with max_array_len=1000: counts above 1000
   return LimitExceeded, others succeed. Exercises both fixarray
@@ -1888,7 +1868,7 @@ class \nodoc\ _PropertyStreamLimitArray
     end
 
 class \nodoc\ _PropertyStreamLimitExt
-  is Property1[U8]
+  is Property[U8]
   """
   For any ext data of size 0-255 with max_ext_len=100: data
   larger than 100 return LimitExceeded, others succeed. Uses
@@ -2404,7 +2384,7 @@ class \nodoc\ _TestStreamDepthDefault is UnitTest
     let limits = MessagePackDecodeLimits
     h.assert_eq[USize](512, limits.max_depth)
 
-class \nodoc\ _PropertyStreamDepth is Property1[U8]
+class \nodoc\ _PropertyStreamDepth is Property[U8]
   """
   Generate a random nesting depth (0-15). Build nested
   fixarrays to that depth, each containing one U8. With
@@ -2999,7 +2979,7 @@ class \nodoc\ _TestStreamSkipInsideContainer is UnitTest
 // Skip property-based tests
 //
 class \nodoc\ _PropertyStreamSkipU32Safety
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, encoding as uint_32 and feeding byte-by-byte,
   skip() returns NotEnoughData until the last byte, then None.
@@ -3043,7 +3023,7 @@ class \nodoc\ _PropertyStreamSkipU32Safety
     end
 
 class \nodoc\ _PropertyStreamSkipI16Safety
-  is Property1[I16]
+  is Property[I16]
   """
   For any I16, encoding as int_16 and feeding byte-by-byte,
   skip() returns NotEnoughData until the last byte, then None.
@@ -3087,7 +3067,7 @@ class \nodoc\ _PropertyStreamSkipI16Safety
     end
 
 class \nodoc\ _PropertyStreamSkipStr8Safety
-  is Property1[String]
+  is Property[String]
   """
   For any short ASCII string, encoding as str_8 and feeding
   byte-by-byte, skip() returns NotEnoughData until the last
@@ -3133,7 +3113,7 @@ class \nodoc\ _PropertyStreamSkipStr8Safety
     end
 
 class \nodoc\ _PropertyStreamSkipFixext4Safety
-  is Property1[U8]
+  is Property[U8]
   """
   For any ext_type byte, encoding a fixext_4 and feeding
   byte-by-byte, skip() returns NotEnoughData until the last
@@ -3185,7 +3165,7 @@ class \nodoc\ _PropertyStreamSkipFixext4Safety
     end
 
 class \nodoc\ _PropertyStreamSkipBin16Safety
-  is Property1[U8]
+  is Property[U8]
   """
   For any small byte array, encoding as bin_16 and feeding
   byte-by-byte, skip() returns NotEnoughData until the last
@@ -3232,7 +3212,7 @@ class \nodoc\ _PropertyStreamSkipBin16Safety
     end
 
 class \nodoc\ _PropertyStreamSkipLimitArray
-  is Property1[U16]
+  is Property[U16]
   """
   Generate arrays with varying element counts, skip with
   small max_skip_values, verify LimitExceeded when element
@@ -3373,7 +3353,7 @@ class \nodoc\ _TestStreamDecodeStrUtf8DefaultOff
     end
 
 class \nodoc\ _PropertyStreamStrUtf8Roundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string, compact str encode then streaming decode
   with validate_utf8 returns the correct string.

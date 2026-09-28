@@ -8,7 +8,7 @@ msgpack is currently beta software. It provides compact encoding/decoding method
 
 ## Installation
 
-* Requires ponyc 0.73.0 or later.
+* Requires ponyc 0.74.0 or later.
 * Install [corral](https://github.com/ponylang/corral)
 * `corral add github.com/ponylang/msgpack.git --version 0.5.0`
 * `corral fetch` to fetch your dependencies

@@ -1,6 +1,5 @@
 use "buffered"
 use "collections"
-use "pony_check"
 use "pony_test"
 
 actor \nodoc\ _TestDecoder is TestList
@@ -54,57 +53,27 @@ actor \nodoc\ _TestDecoder is TestList
     test(_TestDecodeCompactMap)
     test(_TestDecodeCompactExt)
     test(_TestDecodeCompactTimestamp)
-    test(Property1UnitTest[U64](
-      _PropertyCompactUintRoundtrip))
-    test(Property1UnitTest[I64](
-      _PropertyCompactIntRoundtrip))
-    test(Property1UnitTest[String](
-      _PropertyCompactStrRoundtrip))
-    test(Property1UnitTest[U32](
-      _PropertyCompactArrayRoundtrip))
-    test(Property1UnitTest[U32](
-      _PropertyCompactMapRoundtrip))
-    test(Property1UnitTest[U64](
-      _PropertyCompactUintSmallestSize))
-    test(Property1UnitTest[I64](
-      _PropertyCompactIntSmallestSize))
-    test(Property1UnitTest[String](
-      _PropertyCompactStrSmallestSize))
-    test(Property1UnitTest[U32](
-      _PropertyCompactArraySmallestSize))
-    test(Property1UnitTest[U32](
-      _PropertyCompactMapSmallestSize))
-    test(Property1UnitTest[String](
-      _PropertyStr8Roundtrip))
-    test(Property1UnitTest[String](
-      _PropertyStr16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyBin8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyBin16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyFixext1Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyFixext2Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyFixext4Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyFixext8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyFixext16Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyExt8Roundtrip))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertyExt16Roundtrip))
+    test.property(_PropertyCompactUintRoundtrip)
+    test.property(_PropertyCompactIntRoundtrip)
+    test.property(_PropertyCompactStrRoundtrip)
+    test.property(_PropertyCompactArrayRoundtrip)
+    test.property(_PropertyCompactMapRoundtrip)
+    test.property(_PropertyCompactUintSmallestSize)
+    test.property(_PropertyCompactIntSmallestSize)
+    test.property(_PropertyCompactStrSmallestSize)
+    test.property(_PropertyCompactArraySmallestSize)
+    test.property(_PropertyCompactMapSmallestSize)
+    test.property(_PropertyStr8Roundtrip)
+    test.property(_PropertyStr16Roundtrip)
+    test.property(_PropertyBin8Roundtrip)
+    test.property(_PropertyBin16Roundtrip)
+    test.property(_PropertyFixext1Roundtrip)
+    test.property(_PropertyFixext2Roundtrip)
+    test.property(_PropertyFixext4Roundtrip)
+    test.property(_PropertyFixext8Roundtrip)
+    test.property(_PropertyFixext16Roundtrip)
+    test.property(_PropertyExt8Roundtrip)
+    test.property(_PropertyExt16Roundtrip)
     test(_TestDecodeCompactUintRejects)
     test(_TestDecodeCompactIntRejects)
     test(_TestDecodeCompactArrayRejects)
@@ -142,21 +111,12 @@ actor \nodoc\ _TestDecoder is TestList
     test(_TestSkipPositionPreserving)
     test(_TestSkipInvalidFormatByte)
     test(_TestSkipTruncatedData)
-    test(Property1UnitTest[U64](
-      _PropertySkipUint))
-    test(Property1UnitTest[I64](
-      _PropertySkipInt))
-    test(Property1UnitTest[String](
-      _PropertySkipStr))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertySkipBin))
-    test(Property1UnitTest[
-      (U8, Array[U8] val)](
-      _PropertySkipExt))
-    test(Property1UnitTest[
-      (U64, U64)](
-      _PropertySkipPositionPreserving))
+    test.property(_PropertySkipUint)
+    test.property(_PropertySkipInt)
+    test.property(_PropertySkipStr)
+    test.property(_PropertySkipBin)
+    test.property(_PropertySkipExt)
+    test.property(_PropertySkipPositionPreserving)
     test(_TestValidateUTF8Valid)
     test(_TestValidateUTF8Invalid)
     test(_TestDecodeFixstrUtf8)
@@ -169,8 +129,7 @@ actor \nodoc\ _TestDecoder is TestList
     test(_TestDecodeStr32Utf8Invalid)
     test(_TestDecodeCompactStrUtf8)
     test(_TestDecodeCompactStrUtf8Invalid)
-    test(Property1UnitTest[String](
-      _PropertyCompactStrUtf8Roundtrip))
+    test.property(_PropertyCompactStrUtf8Roundtrip)
 
 class \nodoc\ _TestDecodeNil is UnitTest
   fun name(): String =>
@@ -1295,7 +1254,7 @@ class \nodoc\ _TestDecodeCompactMapRejects is UnitTest
     end
 
 class \nodoc\ _PropertyCompactUintRoundtrip
-  is Property1[U64]
+  is Property[U64]
   """
   For any U64, compact uint encode then decode returns the
   original value. Generator covers all five format ranges.
@@ -1331,7 +1290,7 @@ class \nodoc\ _PropertyCompactUintRoundtrip
       arg1, MessagePackDecoder.uint(b)?)
 
 class \nodoc\ _PropertyCompactIntRoundtrip
-  is Property1[I64]
+  is Property[I64]
   """
   For any I64, compact int encode then decode returns the
   original value. Generator covers all ten format ranges.
@@ -1375,7 +1334,7 @@ class \nodoc\ _PropertyCompactIntRoundtrip
       arg1, MessagePackDecoder.int(b)?)
 
 class \nodoc\ _PropertyCompactStrRoundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string, compact str encode then decode returns
   the original string. Generator covers all three format
@@ -1411,7 +1370,7 @@ class \nodoc\ _PropertyCompactStrRoundtrip
       s, MessagePackDecoder.str(b)?)
 
 class \nodoc\ _PropertyCompactArrayRoundtrip
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, compact array encode then decode returns the
   original count. Generator covers all three format ranges.
@@ -1445,7 +1404,7 @@ class \nodoc\ _PropertyCompactArrayRoundtrip
       arg1, MessagePackDecoder.array(b)?)
 
 class \nodoc\ _PropertyCompactMapRoundtrip
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, compact map encode then decode returns the
   original count. Generator covers all three format ranges.
@@ -1479,7 +1438,7 @@ class \nodoc\ _PropertyCompactMapRoundtrip
       arg1, MessagePackDecoder.map(b)?)
 
 class \nodoc\ _PropertyCompactUintSmallestSize
-  is Property1[U64]
+  is Property[U64]
   """
   For any U64, compact uint encoding produces output whose
   size is <= every format-specific encoding that could
@@ -1560,7 +1519,7 @@ class \nodoc\ _PropertyCompactUintSmallestSize
     b.size()
 
 class \nodoc\ _PropertyCompactIntSmallestSize
-  is Property1[I64]
+  is Property[I64]
   """
   For any I64, compact int encoding produces output whose
   size is <= every format-specific encoding that could
@@ -1679,7 +1638,7 @@ class \nodoc\ _PropertyCompactIntSmallestSize
     b.size()
 
 class \nodoc\ _PropertyCompactStrSmallestSize
-  is Property1[String]
+  is Property[String]
   """
   For any string, compact str encoding produces output whose
   size is <= every format-specific encoding that could
@@ -1751,7 +1710,7 @@ class \nodoc\ _PropertyCompactStrSmallestSize
     b.size()
 
 class \nodoc\ _PropertyCompactArraySmallestSize
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, compact array encoding produces output whose
   size is <= every format-specific encoding that could
@@ -1811,7 +1770,7 @@ class \nodoc\ _PropertyCompactArraySmallestSize
     b.size()
 
 class \nodoc\ _PropertyCompactMapSmallestSize
-  is Property1[U32]
+  is Property[U32]
   """
   For any U32, compact map encoding produces output whose
   size is <= every format-specific encoding that could
@@ -1871,7 +1830,7 @@ class \nodoc\ _PropertyCompactMapSmallestSize
     b.size()
 
 class \nodoc\ _PropertyStr8Roundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any string 0-255 bytes, str_8 encode then decode returns
   the original string.
@@ -1897,7 +1856,7 @@ class \nodoc\ _PropertyStr8Roundtrip
     h.assert_eq[String](s, MessagePackDecoder.str_8(b)?)
 
 class \nodoc\ _PropertyStr16Roundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any string 0-65535 bytes, str_16 encode then decode
   returns the original string. Biased toward smaller strings.
@@ -1927,7 +1886,7 @@ class \nodoc\ _PropertyStr16Roundtrip
     h.assert_eq[String](s, MessagePackDecoder.str_16(b)?)
 
 class \nodoc\ _PropertyBin8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   For any byte array 0-255 bytes, bin_8 encode then decode
   returns the original data.
@@ -1966,7 +1925,7 @@ class \nodoc\ _PropertyBin8Roundtrip
     h.assert_eq[USize](value.size(), decoded.size())
 
 class \nodoc\ _PropertyBin16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   For any byte array 0-300 bytes, bin_16 encode then decode
   returns the original data. Biased toward smaller sizes.
@@ -2005,7 +1964,7 @@ class \nodoc\ _PropertyBin16Roundtrip
     h.assert_eq[USize](value.size(), decoded.size())
 
 class \nodoc\ _PropertyFixext1Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   fixext_1 encode then decode roundtrip.
   """
@@ -2041,7 +2000,7 @@ class \nodoc\ _PropertyFixext1Roundtrip
     h.assert_eq[USize](1, dv.size())
 
 class \nodoc\ _PropertyFixext2Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   fixext_2 encode then decode roundtrip.
   """
@@ -2079,7 +2038,7 @@ class \nodoc\ _PropertyFixext2Roundtrip
     h.assert_eq[USize](2, dv.size())
 
 class \nodoc\ _PropertyFixext4Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   fixext_4 encode then decode roundtrip.
   """
@@ -2117,7 +2076,7 @@ class \nodoc\ _PropertyFixext4Roundtrip
     h.assert_eq[USize](4, dv.size())
 
 class \nodoc\ _PropertyFixext8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   fixext_8 encode then decode roundtrip.
   """
@@ -2155,7 +2114,7 @@ class \nodoc\ _PropertyFixext8Roundtrip
     h.assert_eq[USize](8, dv.size())
 
 class \nodoc\ _PropertyFixext16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   fixext_16 encode then decode roundtrip.
   """
@@ -2193,7 +2152,7 @@ class \nodoc\ _PropertyFixext16Roundtrip
     h.assert_eq[USize](16, dv.size())
 
 class \nodoc\ _PropertyExt8Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   ext_8 encode then decode roundtrip with variable-length
   data.
@@ -2233,7 +2192,7 @@ class \nodoc\ _PropertyExt8Roundtrip
     h.assert_eq[USize](value.size(), dv.size())
 
 class \nodoc\ _PropertyExt16Roundtrip
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   ext_16 encode then decode roundtrip with variable-length
   data. Biased toward smaller sizes for speed.
@@ -3078,7 +3037,7 @@ class \nodoc\ _TestSkipTruncatedData is UnitTest
 // Skip property tests
 //
 class \nodoc\ _PropertySkipUint
-  is Property1[U64]
+  is Property[U64]
   """
   For any U64, compact uint encode then skip consumes all
   bytes. Generator covers all five format ranges.
@@ -3111,7 +3070,7 @@ class \nodoc\ _PropertySkipUint
     h.assert_eq[USize](0, b.size())
 
 class \nodoc\ _PropertySkipInt
-  is Property1[I64]
+  is Property[I64]
   """
   For any I64, compact int encode then skip consumes all
   bytes. Generator covers all ten format ranges.
@@ -3152,7 +3111,7 @@ class \nodoc\ _PropertySkipInt
     h.assert_eq[USize](0, b.size())
 
 class \nodoc\ _PropertySkipStr
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string, compact str encode then skip consumes
   all bytes. Generator covers fixstr, str_8, and str_16.
@@ -3184,7 +3143,7 @@ class \nodoc\ _PropertySkipStr
     h.assert_eq[USize](0, b.size())
 
 class \nodoc\ _PropertySkipBin
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   For any byte array, compact bin encode then skip consumes
   all bytes.
@@ -3220,7 +3179,7 @@ class \nodoc\ _PropertySkipBin
     h.assert_eq[USize](0, b.size())
 
 class \nodoc\ _PropertySkipExt
-  is Property1[(U8, Array[U8] val)]
+  is Property[(U8, Array[U8] val)]
   """
   For any ext value, encode then skip consumes all bytes.
   Generator covers fixext and ext_8 sizes.
@@ -3266,7 +3225,7 @@ class \nodoc\ _PropertySkipExt
     h.assert_eq[USize](0, b.size())
 
 class \nodoc\ _PropertySkipPositionPreserving
-  is Property1[(U64, U64)]
+  is Property[(U64, U64)]
   """
   Encode two uint values, skip the first, decode the second.
   The decoded value must match the original.
@@ -3504,7 +3463,7 @@ class \nodoc\ _TestDecodeCompactStrUtf8Invalid is UnitTest
     end
 
 class \nodoc\ _PropertyCompactStrUtf8Roundtrip
-  is Property1[String]
+  is Property[String]
   """
   For any ASCII string, compact str encode with str_utf8 then
   decode with str_utf8 returns the original string. ASCII is
