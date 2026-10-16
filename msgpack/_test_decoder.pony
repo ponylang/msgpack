@@ -2490,7 +2490,7 @@ class \nodoc\ _TestSkipUint is UnitTest
     h: TestHelper,
     v: U64,
     expected_size: USize,
-    label: String)
+    label': String)
     ?
   =>
     let w: Writer ref = Writer
@@ -2500,10 +2500,10 @@ class \nodoc\ _TestSkipUint is UnitTest
       b.append(bs)
     end
     h.assert_eq[USize](
-      expected_size, b.size(), "size " + label)
+      expected_size, b.size(), "size " + label')
     MessagePackDecoder.skip(b)?
     h.assert_eq[USize](
-      0, b.size(), "skip " + label)
+      0, b.size(), "skip " + label')
 
 class \nodoc\ _TestSkipInt is UnitTest
   fun name(): String =>
@@ -2520,7 +2520,7 @@ class \nodoc\ _TestSkipInt is UnitTest
     h: TestHelper,
     v: I64,
     expected_size: USize,
-    label: String)
+    label': String)
     ?
   =>
     let w: Writer ref = Writer
@@ -2530,10 +2530,10 @@ class \nodoc\ _TestSkipInt is UnitTest
       b.append(bs)
     end
     h.assert_eq[USize](
-      expected_size, b.size(), "size " + label)
+      expected_size, b.size(), "size " + label')
     MessagePackDecoder.skip(b)?
     h.assert_eq[USize](
-      0, b.size(), "skip " + label)
+      0, b.size(), "skip " + label')
 
 class \nodoc\ _TestSkipFloat is UnitTest
   fun name(): String =>
@@ -2695,7 +2695,7 @@ class \nodoc\ _TestSkipFixext is UnitTest
   fun _check(
     h: TestHelper,
     data_size: USize,
-    label: String)
+    label': String)
     ?
   =>
     let data: Array[U8] val =
@@ -2711,7 +2711,7 @@ class \nodoc\ _TestSkipFixext is UnitTest
     end
     MessagePackDecoder.skip(b)?
     h.assert_eq[USize](
-      0, b.size(), "skip " + label)
+      0, b.size(), "skip " + label')
 
 class \nodoc\ _TestSkipExt8 is UnitTest
   fun name(): String =>

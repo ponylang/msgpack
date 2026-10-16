@@ -2047,7 +2047,7 @@ class \nodoc\ _TestEncodeCompactTimestamp is UnitTest
     sec: I64,
     nsec: U32,
     expected_format: U8,
-    label: String)
+    label': String)
     ?
   =>
     let w: Writer ref = Writer
@@ -2057,7 +2057,7 @@ class \nodoc\ _TestEncodeCompactTimestamp is UnitTest
       b.append(bs)
     end
     h.assert_eq[U8](
-      expected_format, b.peek_u8()?, label)
+      expected_format, b.peek_u8()?, label')
 
 class \nodoc\ _TestEncodeFixstrUtf8 is UnitTest
   fun name(): String =>
