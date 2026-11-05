@@ -649,7 +649,7 @@ class \nodoc\ _TestDecodeFixext1 is UnitTest
       MessagePackDecoder.fixext_1(b)?
     h.assert_eq[U8](user_type, decoded_type)
     h.assert_eq[USize](size, decoded_value.size())
-    for i in Range(0, size) do
+    for i in Range[USize].till(0, size) do
       h.assert_eq[U8]('V', decoded_value(i)?)
     end
 
@@ -675,7 +675,7 @@ class \nodoc\ _TestDecodeFixext2 is UnitTest
       MessagePackDecoder.fixext_2(b)?
     h.assert_eq[U8](user_type, decoded_type)
     h.assert_eq[USize](size, decoded_value.size())
-    for i in Range(0, size) do
+    for i in Range[USize].till(0, size) do
       h.assert_eq[U8]('V', decoded_value(i)?)
     end
 
@@ -701,7 +701,7 @@ class \nodoc\ _TestDecodeFixext4 is UnitTest
       MessagePackDecoder.fixext_4(b)?
     h.assert_eq[U8](user_type, decoded_type)
     h.assert_eq[USize](size, decoded_value.size())
-    for i in Range(0, size) do
+    for i in Range[USize].till(0, size) do
       h.assert_eq[U8]('V', decoded_value(i)?)
     end
 
@@ -727,7 +727,7 @@ class \nodoc\ _TestDecodeFixext8 is UnitTest
       MessagePackDecoder.fixext_8(b)?
     h.assert_eq[U8](user_type, decoded_type)
     h.assert_eq[USize](size, decoded_value.size())
-    for i in Range(0, size) do
+    for i in Range[USize].till(0, size) do
       h.assert_eq[U8]('V', decoded_value(i)?)
     end
 
@@ -753,7 +753,7 @@ class \nodoc\ _TestDecodeFixext16 is UnitTest
       MessagePackDecoder.fixext_16(b)?
     h.assert_eq[U8](user_type, decoded_type)
     h.assert_eq[USize](size, decoded_value.size())
-    for i in Range(0, size) do
+    for i in Range[USize].till(0, size) do
       h.assert_eq[U8]('V', decoded_value(i)?)
     end
 
@@ -1097,7 +1097,7 @@ class \nodoc\ _TestDecodeCompactExt is UnitTest
       data_size,
       dv.size(),
       "data size for size=" + data_size.string())
-    for i in Range(0, data_size) do
+    for i in Range[USize].till(0, data_size) do
       h.assert_eq[U8](
         'X', dv(i)?, "data byte " + i.string())
     end

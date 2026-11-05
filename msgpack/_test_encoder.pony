@@ -1103,7 +1103,7 @@ class \nodoc\ _TestEncodeFixext2 is UnitTest
     h.assert_eq[USize](2 + size, b.size())
     h.assert_eq[U8](0xD5, b.peek_u8()?)
     h.assert_eq[U8](user_type, b.peek_u8(1)?)
-    for i in Range(2, (2 + size)) do
+    for i in Range[USize].till(2, (2 + size)) do
       h.assert_eq[U8]('V', b.peek_u8(i)?)
     end
 
@@ -1160,7 +1160,7 @@ class \nodoc\ _TestEncodeFixext4 is UnitTest
     h.assert_eq[USize](2 + size, b.size())
     h.assert_eq[U8](0xD6, b.peek_u8()?)
     h.assert_eq[U8](user_type, b.peek_u8(1)?)
-    for i in Range(2, (2 + size)) do
+    for i in Range[USize].till(2, (2 + size)) do
       h.assert_eq[U8]('V', b.peek_u8(i)?)
     end
 
@@ -1217,7 +1217,7 @@ class \nodoc\ _TestEncodeFixext8 is UnitTest
     h.assert_eq[USize](2 + size, b.size())
     h.assert_eq[U8](0xD7, b.peek_u8()?)
     h.assert_eq[U8](user_type, b.peek_u8(1)?)
-    for i in Range(2, (2 + size)) do
+    for i in Range[USize].till(2, (2 + size)) do
       h.assert_eq[U8]('V', b.peek_u8(i)?)
     end
 
@@ -1274,7 +1274,7 @@ class \nodoc\ _TestEncodeFixext16 is UnitTest
     h.assert_eq[USize](2 + size, b.size())
     h.assert_eq[U8](0xD8, b.peek_u8()?)
     h.assert_eq[U8](user_type, b.peek_u8(1)?)
-    for i in Range(2, (2 + size)) do
+    for i in Range[USize].till(2, (2 + size)) do
       h.assert_eq[U8]('V', b.peek_u8(i)?)
     end
 
